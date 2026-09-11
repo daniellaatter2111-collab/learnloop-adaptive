@@ -59,7 +59,7 @@ function StudentDashboard() {
         <LearningProfileCard profile={profile} />
       </div>
 
-      <RecommendationList items={recommendations} />
+      <RecommendationList items={recommendations} learnerStyle={profile.style} />
 
       <Card>
         <CardHeading

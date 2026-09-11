@@ -94,7 +94,7 @@ function LearningPage() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {filtered.map((item) => (
-            <RecommendationCard key={item.id} item={item} />
+            <RecommendationCard key={item.id} item={item} learnerStyle={profile.style} />
           ))}
         </div>
       )}
