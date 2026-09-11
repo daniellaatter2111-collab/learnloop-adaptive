@@ -1,5 +1,4 @@
 import { getState, setState } from "@/lib/store";
-import { mockLearningItems } from "@/data/mockCourses";
 import type { LearningItem, LearningProfile, LearningStyle, OnboardingData } from "@/types";
 
 const VISUAL_SIGNALS = ["Watching diagrams", "Reading explanations", "Practicing questions"];
@@ -68,12 +67,21 @@ export const learningService = {
   },
 
   getLearningItems(): LearningItem[] {
-    return mockLearningItems;
+    return getState().learningItems;
+  },
+
+  setItemProgress(id: string, progress: number) {
+    const nextProgress = Math.max(0, Math.min(100, Math.round(progress)));
+    setState((s) => ({
+      learningItems: s.learningItems.map((item) =>
+        item.id === id ? { ...item, progress: nextProgress } : item,
+      ),
+    }));
   },
 
   /** Adaptive content: surface items matching the student's learning style first. */
   getRecommendations(style: LearningStyle, limit = 3): LearningItem[] {
-    return mockLearningItems
+    return getState().learningItems
       .filter((i) => i.recommended)
       .sort((a, b) => Number(b.suitedTo === style) - Number(a.suitedTo === style))
       .slice(0, limit);

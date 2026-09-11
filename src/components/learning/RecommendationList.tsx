@@ -3,6 +3,7 @@ import { Card, CardHeading, Pill, ProgressBar } from "@/components/shared/Primit
 import { Button } from "@/components/ui/button";
 import type { LearningItem } from "@/types";
 import { toast } from "sonner";
+import { learningService } from "@/services/learningService";
 
 function ctaFor(progress: number) {
   if (progress >= 100) return "Review";
@@ -41,7 +42,11 @@ export function RecommendationCard({ item }: { item: LearningItem }) {
       <Button
         variant={item.progress > 0 ? "outline" : "default"}
         className="mt-4 w-full"
-        onClick={() => toast.success(`${ctaFor(item.progress)}ing ${item.title}`)}
+        onClick={() => {
+          const next = item.progress >= 100 ? 0 : Math.min(100, item.progress + 25);
+          learningService.setItemProgress(item.id, next);
+          toast.success(item.progress >= 100 ? `${item.title} is ready for another review` : `${item.title} progress updated to ${next}%`);
+        }}
       >
         {ctaFor(item.progress)}
       </Button>

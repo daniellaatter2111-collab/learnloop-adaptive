@@ -25,11 +25,15 @@ export const Route = createFileRoute("/student/learning")({
 function LearningPage() {
   const { items, profile } = useLearningProfile();
   const [subject, setSubject] = useState<string>("All");
+  const [status, setStatus] = useState<"all" | "recommended" | "in_progress" | "completed">("all");
 
   const filtered = useMemo(() => {
-    const list = subject === "All" ? items : items.filter((i) => i.subject === subject);
+    const bySubject = subject === "All" ? items : items.filter((i) => i.subject === subject);
+    const list = bySubject.filter((item) =>
+      status === "all" ? true : status === "recommended" ? item.recommended : status === "completed" ? item.progress >= 100 : item.progress > 0 && item.progress < 100,
+    );
     return [...list].sort((a, b) => Number(b.suitedTo === profile.style) - Number(a.suitedTo === profile.style));
-  }, [items, subject, profile.style]);
+  }, [items, subject, status, profile.style]);
 
   return (
     <div>
@@ -53,6 +57,30 @@ function LearningPage() {
             )}
           >
             {s}
+          </button>
+        ))}
+      </div>
+
+      <div className="mb-6 flex flex-wrap gap-2" role="tablist" aria-label="Filter learning status">
+        {[
+          ["all", "All content"],
+          ["recommended", "Recommended"],
+          ["in_progress", "In progress"],
+          ["completed", "Completed"],
+        ].map(([value, label]) => (
+          <button
+            key={value}
+            type="button"
+            aria-pressed={status === value}
+            onClick={() => setStatus(value as typeof status)}
+            className={cn(
+              "rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors",
+              status === value
+                ? "border-primary bg-primary-soft text-accent-foreground"
+                : "border-border bg-surface text-muted-foreground hover:bg-muted",
+            )}
+          >
+            {label}
           </button>
         ))}
       </div>

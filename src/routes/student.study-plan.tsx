@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { BookOpen, Coffee, MessageCircle, Sparkles } from "lucide-react";
+import { toast } from "sonner";
 import { Card, CardHeading, PageHeader, Pill } from "@/components/shared/Primitives";
 import { ProductivityChart } from "@/components/charts/Charts";
 import { useLearningProfile } from "@/hooks/useLearningProfile";
 import { productivityByHour } from "@/data/mockLearningProfile";
 import { studyPlan } from "@/data/mockReports";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/student/study-plan")({
   head: () => ({
@@ -31,6 +33,7 @@ function StudyPlanPage() {
       <PageHeader
         title="Study Plan"
         description={`Scheduled around your peak focus window, ${profile.peakHours}.`}
+        action={<Button variant="outline" onClick={() => toast.success("Your plan has been refreshed around your focus window")}>Adjust plan</Button>}
       />
 
       <div className="grid gap-6 lg:grid-cols-3">

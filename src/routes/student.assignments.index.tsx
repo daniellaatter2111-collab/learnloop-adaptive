@@ -9,6 +9,7 @@ import {
   StatusBadge,
 } from "@/components/shared/Primitives";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useAssignments } from "@/hooks/useAssignments";
 import { cn } from "@/lib/utils";
 import type { AssignmentStatus } from "@/types";
@@ -38,7 +39,11 @@ const filters: { value: "all" | AssignmentStatus; label: string }[] = [
 function AssignmentsPage() {
   const { assignments } = useAssignments("stu-1");
   const [filter, setFilter] = useState<"all" | AssignmentStatus>("all");
-  const list = filter === "all" ? assignments : assignments.filter((a) => a.status === filter);
+  const [query, setQuery] = useState("");
+  const list = (filter === "all" ? assignments : assignments.filter((a) => a.status === filter)).filter(
+    (assignment) =>
+      `${assignment.title} ${assignment.subject}`.toLowerCase().includes(query.trim().toLowerCase()),
+  );
 
   return (
     <div>
@@ -61,6 +66,15 @@ function AssignmentsPage() {
           </button>
         ))}
       </div>
+
+      <label className="mb-6 block max-w-sm">
+        <span className="sr-only">Search assignments</span>
+        <Input
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Search assignments"
+        />
+      </label>
 
       {list.length === 0 ? (
         <EmptyState

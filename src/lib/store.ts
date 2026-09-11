@@ -3,6 +3,7 @@ import type {
   Assignment,
   CourseMaterial,
   LearningProfile,
+  LearningItem,
   Notification,
   OnboardingData,
   Student,
@@ -13,6 +14,7 @@ import { mockStudents } from "@/data/mockStudents";
 import { mockAssignments } from "@/data/mockAssignments";
 import { mockMaterials } from "@/data/mockCourses";
 import { mockLearningProfile } from "@/data/mockLearningProfile";
+import { mockLearningItems } from "@/data/mockCourses";
 
 export type AppState = {
   user: User | null;
@@ -20,6 +22,7 @@ export type AppState = {
   assignments: Assignment[];
   materials: CourseMaterial[];
   profile: LearningProfile;
+  learningItems: LearningItem[];
   onboarding: OnboardingData | null;
   onboardingComplete: boolean;
   tutorMessages: TutorMessage[];
@@ -35,6 +38,7 @@ export const initialState: AppState = {
   assignments: mockAssignments,
   materials: mockMaterials,
   profile: mockLearningProfile,
+  learningItems: mockLearningItems,
   onboarding: null,
   onboardingComplete: false,
   tutorMessages: [],

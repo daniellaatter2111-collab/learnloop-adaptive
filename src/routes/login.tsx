@@ -48,7 +48,7 @@ function LoginPage() {
     try {
       const user = await login(email, password, role);
       if (user.role === "student" && !onboardingComplete) {
-        navigate({ to: "/onboarding", replace: true });
+        navigate({ to: "/student/onboarding", replace: true });
       } else {
         navigate({ to: homeFor(user.role), replace: true });
       }

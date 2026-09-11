@@ -38,7 +38,7 @@ const preferences = [
 ];
 const times = ["Morning", "Afternoon", "Evening", "Night"];
 
-function OnboardingPage() {
+export function OnboardingPage() {
   const { completeOnboarding } = useLearningProfile();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
