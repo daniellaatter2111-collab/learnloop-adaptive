@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Download } from "lucide-react";
 import { DailyLearningCard } from "@/components/dashboard/DailyLearningCard";
 import { StatsGrid } from "@/components/dashboard/StatsGrid";
 import { LearningProfileCard } from "@/components/dashboard/LearningProfileCard";
@@ -84,7 +84,15 @@ function StudentDashboard() {
                     {material.uploadedAt}
                   </p>
                 </div>
-                <span className="text-xs font-medium text-success">Shared</span>
+                {material.fileData ? (
+                  <Button asChild variant="ghost" size="sm">
+                    <a href={material.fileData} download={material.fileName ?? material.title}>
+                      <Download className="size-4" /> Download
+                    </a>
+                  </Button>
+                ) : (
+                  <span className="text-xs font-medium text-success">Shared</span>
+                )}
               </li>
             ))}
           </ul>

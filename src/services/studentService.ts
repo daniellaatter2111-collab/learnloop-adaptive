@@ -11,7 +11,7 @@ export const studentService = {
   },
 
   createStudent(input: {
-    name: string;
+    name?: string;
     email: string;
     id: string;
     academicLevel: string;
@@ -23,7 +23,12 @@ export const studentService = {
     }
     const student: Student = {
       id: input.id.trim() || `stu-${Date.now()}`,
-      name: input.name.trim(),
+      name:
+        input.name?.trim() ||
+        email
+          .split("@")[0]
+          .replace(/[._-]/g, " ")
+          .replace(/\b\w/g, (letter) => letter.toUpperCase()),
       email,
       teacherId,
       academicLevel: input.academicLevel,

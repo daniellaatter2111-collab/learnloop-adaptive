@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Briefcase, Plus, Trash2, Upload } from "lucide-react";
+import { Briefcase, Download, Plus, Trash2, Upload, UserPlus } from "lucide-react";
 import { ActivityChart, PerformanceChart, SubjectBarChart } from "@/components/charts/Charts";
 import {
   Card,
@@ -293,6 +293,19 @@ export function AdminDashboard() {
           value={students.filter((s) => s.status === "Needs attention").length}
         />
       </div>
+      <Card className="flex flex-wrap items-center justify-between gap-4 bg-primary-soft">
+        <div>
+          <p className="font-semibold">Build your classroom</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Add a learner using their email address, then share materials and assignments.
+          </p>
+        </div>
+        <Button asChild>
+          <Link to="/admin/students">
+            <UserPlus className="size-4" /> Add students
+          </Link>
+        </Button>
+      </Card>
       <Card>
         <CardHeading title="Student progress" />
         <SubjectTable />
@@ -320,7 +333,6 @@ export function AdminStudentsPage() {
   );
   function submit(e: FormEvent) {
     e.preventDefault();
-    if (!name.trim()) return;
     try {
       createStudent({ name, email, id, academicLevel: "Grade 11" });
       setName("");
@@ -340,8 +352,7 @@ export function AdminStudentsPage() {
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Student name"
-            required
+            placeholder="Student name (optional)"
             className="max-w-xs"
           />
           <Input
@@ -522,7 +533,9 @@ export function AdminMaterialsPage() {
   const [subject, setSubject] = useState("Mathematics");
   const [recipientId, setRecipientId] = useState("all");
   const [fileName, setFileName] = useState<string | undefined>();
-  function submit(e: FormEvent) {
+  const [fileData, setFileData] = useState<string | undefined>();
+  const [fileError, setFileError] = useState<string | null>(null);
+  async function submit(e: FormEvent) {
     e.preventDefault();
     if (!title.trim()) return;
     uploadMaterial({
@@ -533,9 +546,11 @@ export function AdminMaterialsPage() {
       recipientStudentIds:
         recipientId === "all" ? students.map((student) => student.id) : [recipientId],
       fileName,
+      fileData,
     });
     setTitle("");
     setFileName(undefined);
+    setFileData(undefined);
     toast.success(
       recipientId === "all"
         ? "Material shared with your whole class."
@@ -580,18 +595,34 @@ export function AdminMaterialsPage() {
               </option>
             ))}
           </select>
-          <label className="flex h-9 cursor-pointer items-center rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
+          <label className="flex h-9 max-w-full cursor-pointer items-center truncate rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
             <input
               type="file"
               className="sr-only"
-              onChange={(event) => setFileName(event.target.files?.[0]?.name)}
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                setFileError(null);
+                setFileName(file?.name);
+                setFileData(undefined);
+                if (!file) return;
+                if (file.size > 2 * 1024 * 1024) {
+                  setFileError("Choose a file smaller than 2 MB for local storage.");
+                  return;
+                }
+                const reader = new FileReader();
+                reader.onload = () =>
+                  setFileData(typeof reader.result === "string" ? reader.result : undefined);
+                reader.onerror = () => setFileError("This file could not be read.");
+                reader.readAsDataURL(file);
+              }}
             />
             {fileName ?? "Attach file (optional)"}
           </label>
-          <Button type="submit">
+          <Button type="submit" disabled={Boolean(fileError || (fileName && !fileData))}>
             <Upload className="size-4" /> Upload material
           </Button>
         </form>
+        {fileError ? <p className="mt-3 text-sm text-danger">{fileError}</p> : null}
       </Card>
       <Card>
         <div className="space-y-3">
@@ -607,16 +638,25 @@ export function AdminMaterialsPage() {
                   {m.recipientStudentIds.length === 1 ? "" : "s"} · Uploaded {m.uploadedAt}
                 </p>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  deleteMaterial(m.id);
-                  toast.success("Material removed");
-                }}
-              >
-                <Trash2 className="size-4" /> Delete
-              </Button>
+              <div className="flex gap-1">
+                {m.fileData ? (
+                  <Button asChild variant="ghost" size="sm">
+                    <a href={m.fileData} download={m.fileName ?? m.title}>
+                      <Download className="size-4" /> Download
+                    </a>
+                  </Button>
+                ) : null}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    deleteMaterial(m.id);
+                    toast.success("Material removed");
+                  }}
+                >
+                  <Trash2 className="size-4" /> Delete
+                </Button>
+              </div>
             </div>
           ))}
         </div>

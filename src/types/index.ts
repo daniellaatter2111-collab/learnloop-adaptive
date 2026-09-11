@@ -54,6 +54,8 @@ export type CourseMaterial = {
   teacherId: string;
   recipientStudentIds: string[];
   fileName?: string;
+  /** A small local file stored as a data URL for this frontend prototype. */
+  fileData?: string;
 };
 
 export type LearningProfile = {

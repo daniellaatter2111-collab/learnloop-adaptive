@@ -13,6 +13,7 @@ export const materialService = {
     type: MaterialType;
     recipientStudentIds: string[];
     fileName?: string;
+    fileData?: string;
   }): CourseMaterial {
     const teacherId = getState().user?.role === "admin" ? getState().user.id : "teacher-sarah";
     const material: CourseMaterial = {

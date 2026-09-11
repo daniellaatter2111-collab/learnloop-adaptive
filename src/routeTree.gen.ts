@@ -15,6 +15,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as ParentRouteImport } from './routes/parent'
 import { Route as StudentRouteImport } from './routes/student'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAssignmentsRouteImport } from './routes/admin.assignments'
 import { Route as AdminCareerRouteImport } from './routes/admin.career'
 import { Route as AdminMaterialsRouteImport } from './routes/admin.materials'
@@ -69,6 +70,11 @@ const StudentRoute = StudentRouteImport.update({
   id: '/student',
   path: '/student',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminAssignmentsRoute = AdminAssignmentsRouteImport.update({
   id: '/assignments',
@@ -219,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/student/settings': typeof StudentSettingsRoute
   '/student/study-plan': typeof StudentStudyPlanRoute
   '/student/tutor': typeof StudentTutorRoute
+  '/admin/': typeof AdminIndexRoute
   '/parent/': typeof ParentIndexRoute
   '/student/': typeof StudentIndexRoute
   '/student/assignments/$assignmentId': typeof StudentAssignmentsAssignmentIdRoute
@@ -226,7 +233,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/admin/assignments': typeof AdminAssignmentsRoute
@@ -249,6 +255,7 @@ export interface FileRoutesByTo {
   '/student/settings': typeof StudentSettingsRoute
   '/student/study-plan': typeof StudentStudyPlanRoute
   '/student/tutor': typeof StudentTutorRoute
+  '/admin': typeof AdminIndexRoute
   '/parent': typeof ParentIndexRoute
   '/student': typeof StudentIndexRoute
   '/student/assignments/$assignmentId': typeof StudentAssignmentsAssignmentIdRoute
@@ -282,6 +289,7 @@ export interface FileRoutesById {
   '/student/settings': typeof StudentSettingsRoute
   '/student/study-plan': typeof StudentStudyPlanRoute
   '/student/tutor': typeof StudentTutorRoute
+  '/admin/': typeof AdminIndexRoute
   '/parent/': typeof ParentIndexRoute
   '/student/': typeof StudentIndexRoute
   '/student/assignments/$assignmentId': typeof StudentAssignmentsAssignmentIdRoute
@@ -316,6 +324,7 @@ export interface FileRouteTypes {
     | '/student/settings'
     | '/student/study-plan'
     | '/student/tutor'
+    | '/admin/'
     | '/parent/'
     | '/student/'
     | '/student/assignments/$assignmentId'
@@ -323,7 +332,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
     | '/login'
     | '/onboarding'
     | '/admin/assignments'
@@ -346,6 +354,7 @@ export interface FileRouteTypes {
     | '/student/settings'
     | '/student/study-plan'
     | '/student/tutor'
+    | '/admin'
     | '/parent'
     | '/student'
     | '/student/assignments/$assignmentId'
@@ -378,6 +387,7 @@ export interface FileRouteTypes {
     | '/student/settings'
     | '/student/study-plan'
     | '/student/tutor'
+    | '/admin/'
     | '/parent/'
     | '/student/'
     | '/student/assignments/$assignmentId'
@@ -436,6 +446,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/student'
       preLoaderRoute: typeof StudentRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/assignments': {
       id: '/admin/assignments'
@@ -615,6 +632,7 @@ interface AdminRouteChildren {
   AdminReportsRoute: typeof AdminReportsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminStudentsRoute: typeof AdminStudentsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -624,6 +642,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminReportsRoute: AdminReportsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminStudentsRoute: AdminStudentsRoute,
+  AdminIndexRoute: AdminIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
