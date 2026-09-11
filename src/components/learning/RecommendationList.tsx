@@ -1,15 +1,23 @@
-import { BookOpen, ExternalLink, Headphones, Sparkles, Video } from "lucide-react";
+import { BookOpen, Check, ExternalLink, Headphones, Sparkles, Video } from "lucide-react";
 import { Card, CardHeading, Pill, ProgressBar } from "@/components/shared/Primitives";
 import { Button } from "@/components/ui/button";
 import type { LearningItem, LearningStyle } from "@/types";
 import { toast } from "sonner";
 import { learningService } from "@/services/learningService";
 
-function ctaFor(progress: number) {
-  if (progress >= 100) return "Review";
-  if (progress > 0) return "Continue";
-  return "Start";
+type LearningStatus = "pending" | "in_progress" | "completed";
+
+function statusFor(progress: number): LearningStatus {
+  if (progress >= 100) return "completed";
+  if (progress > 0) return "in_progress";
+  return "pending";
 }
+
+const statusOptions: Array<{ value: LearningStatus; label: string }> = [
+  { value: "pending", label: "Pending" },
+  { value: "in_progress", label: "In process" },
+  { value: "completed", label: "Completed" },
+];
 
 const subjectTextbooks: Record<string, { title: string; url: string }> = {
   Mathematics: {
@@ -38,9 +46,11 @@ function videoSearchUrl(item: LearningItem, style: LearningStyle) {
 export function RecommendationCard({
   item,
   learnerStyle = item.suitedTo,
+  onOpenFlashcards,
 }: {
   item: LearningItem;
   learnerStyle?: LearningStyle;
+  onOpenFlashcards?: (item: LearningItem) => void;
 }) {
   const textbook = subjectTextbooks[item.subject];
   const VideoIcon = learnerStyle === "audio" ? Headphones : Video;
@@ -106,21 +116,41 @@ export function RecommendationCard({
         </div>
       </section>
 
-      <Button
-        variant={item.progress > 0 ? "outline" : "default"}
-        className="mt-4 w-full"
-        onClick={() => {
-          const next = item.progress >= 100 ? 0 : Math.min(100, item.progress + 25);
-          learningService.setItemProgress(item.id, next);
-          toast.success(
-            item.progress >= 100
-              ? `${item.title} is ready for another review`
-              : `${item.title} progress updated to ${next}%`,
-          );
-        }}
+      <div
+        className="mt-4 grid grid-cols-3 overflow-hidden rounded-lg border border-border"
+        role="group"
+        aria-label={`Status for ${item.title}`}
       >
-        {ctaFor(item.progress)}
-      </Button>
+        {statusOptions.map((option) => {
+          const active = statusFor(item.progress) === option.value;
+          return (
+            <button
+              key={option.value}
+              type="button"
+              aria-pressed={active}
+              onClick={() => {
+                const progress =
+                  option.value === "completed" ? 100 : option.value === "in_progress" ? 50 : 0;
+                learningService.setItemProgress(item.id, progress);
+                toast.success(`${item.title} marked ${option.label.toLowerCase()}`);
+              }}
+              className={`flex min-h-9 items-center justify-center gap-1 px-2 text-[11px] font-medium transition-colors ${
+                active
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-background text-muted-foreground hover:bg-muted"
+              }`}
+            >
+              {active && <Check className="size-3" aria-hidden />}
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+      {item.format === "Flashcards" && onOpenFlashcards ? (
+        <Button variant="outline" className="mt-2 w-full" onClick={() => onOpenFlashcards(item)}>
+          Open flashcards
+        </Button>
+      ) : null}
     </article>
   );
 }

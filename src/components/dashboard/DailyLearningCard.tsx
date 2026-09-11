@@ -1,7 +1,5 @@
-import { Link } from "@tanstack/react-router";
-import { ArrowRight, Clock, Sparkles } from "lucide-react";
+import { Clock, Sparkles } from "lucide-react";
 import { CircularProgress } from "@/components/shared/Primitives";
-import { Button } from "@/components/ui/button";
 
 export function DailyLearningCard({
   progress,
@@ -33,11 +31,6 @@ export function DailyLearningCard({
               Next: <span className="font-medium text-foreground">{nextUp}</span>
             </span>
           </div>
-          <Button asChild className="mt-5">
-            <Link to="/student/learning">
-              Continue learning <ArrowRight className="size-4" aria-hidden />
-            </Link>
-          </Button>
         </div>
 
         <div className="flex items-center gap-4 sm:flex-col sm:items-center">
