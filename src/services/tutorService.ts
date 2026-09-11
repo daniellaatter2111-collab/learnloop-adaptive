@@ -1,5 +1,6 @@
 import { getState, setState } from "@/lib/store";
 import type { LearningStyle, TutorMessage } from "@/types";
+import { generateGeminiTutorResponse } from "@/services/geminiTutor.server";
 
 export type TutorContext = {
   subject: string;
@@ -58,8 +59,41 @@ const rules: Rule[] = [
   },
 ];
 
+function solveQuadratic(message: string) {
+  const compact = message.toLowerCase().replace(/\s/g, "").replace(/²/g, "^2");
+  const match = compact.match(/([+-]?\d*)x\^2([+-]\d*)x([+-]\d+)=?0?/);
+  if (!match) return null;
+  const coefficient = (value: string) =>
+    value === "" || value === "+" ? 1 : value === "-" ? -1 : Number(value);
+  const [a, b, c] = match.slice(1).map(coefficient);
+  if (!Number.isFinite(a) || a === 0 || !Number.isFinite(b) || !Number.isFinite(c)) return null;
+  const discriminant = b ** 2 - 4 * a * c;
+  if (discriminant < 0)
+    return `For ${message.trim()}, the discriminant is ${discriminant}, so there are no real solutions. In complex numbers, x = (${-b} ± ${Math.sqrt(-discriminant)}i) / ${2 * a}.`;
+  const root1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+  const root2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+  const display = (value: number) =>
+    Number.isInteger(value) ? String(value) : String(Number(value.toFixed(3)));
+  return `Let a = ${a}, b = ${b}, and c = ${c}.\n\nUsing x = (−b ± √(b² − 4ac)) / 2a:\nx = (${-b} ± √${discriminant}) / ${2 * a}\n\nSo the solutions are x = ${display(root1)} and x = ${display(root2)}.`;
+}
+
+function checkQuizAnswer(message: string) {
+  const previous = getState().tutorMessages.at(-1);
+  if (!previous || previous.role !== "assistant" || !previous.content.includes("x² − 5x + 6 = 0"))
+    return null;
+  const answer = message.replace(/\s/g, "").toLowerCase();
+  if ((answer.includes("2") && answer.includes("3")) || answer.includes("x=2orx=3")) {
+    return "Correct — x = 2 and x = 3. Factoring gives (x − 2)(x − 3) = 0, so either factor can equal zero. Nice work!";
+  }
+  return "Not quite. Try finding two numbers that multiply to 6 and add to −5. That gives (x − 2)(x − 3) = 0, so the roots are 2 and 3.";
+}
+
 export const tutorService = {
   generateTutorResponse(message: string, context: TutorContext): string {
+    const quizFeedback = checkQuizAnswer(message);
+    if (quizFeedback) return quizFeedback;
+    const quadraticSolution = solveQuadratic(message);
+    if (quadraticSolution) return quadraticSolution;
     const rule = rules.find((r) => r.match.test(message));
     if (rule) return rule.reply(context);
     return `Good question. Right now you're working on ${context.topic} in ${context.subject}, and you learn best from ${context.style === "visual" ? "visual explanations" : "spoken and audio explanations"}, so let's approach it that way.\n\nTell me which part you'd like to start with — the idea behind it, a worked example, or some practice questions.`;
@@ -74,12 +108,25 @@ export const tutorService = {
     };
     setState((s) => ({ tutorMessages: [...s.tutorMessages, userMsg] }));
 
-    await new Promise((r) => setTimeout(r, 900 + Math.random() * 500));
+    let content: string;
+    try {
+      content = await generateGeminiTutorResponse({
+        data: {
+          ...context,
+          messages: getState()
+            .tutorMessages.slice(-12)
+            .map(({ role, content }) => ({ role, content })),
+        },
+      });
+    } catch {
+      // The local tutor keeps the learning flow available if the provider is temporarily unavailable.
+      content = tutorService.generateTutorResponse(message, context);
+    }
 
     const reply: TutorMessage = {
       id: `m-${Date.now() + 1}`,
       role: "assistant",
-      content: tutorService.generateTutorResponse(message, context),
+      content,
       timestamp: Date.now(),
     };
     setState((s) => ({ tutorMessages: [...s.tutorMessages, reply] }));

@@ -1,12 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { BookOpen, Coffee, MessageCircle, Sparkles } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Card, CardHeading, PageHeader, Pill } from "@/components/shared/Primitives";
 import { ProductivityChart } from "@/components/charts/Charts";
 import { useLearningProfile } from "@/hooks/useLearningProfile";
 import { productivityByHour } from "@/data/mockLearningProfile";
-import { studyPlan } from "@/data/mockReports";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useAppState } from "@/lib/store";
+import { studyPlanService } from "@/services/studyPlanService";
 
 export const Route = createFileRoute("/student/study-plan")({
   head: () => ({
@@ -27,13 +39,34 @@ const icons = { study: BookOpen, break: Coffee, tutor: MessageCircle } as const;
 
 function StudyPlanPage() {
   const { profile } = useLearningProfile();
+  const { studyPlan } = useAppState();
+  const [adjusting, setAdjusting] = useState(false);
+  const [startTime, setStartTime] = useState("18:00");
+  const [studyMinutes, setStudyMinutes] = useState("30");
+  const [breakMinutes, setBreakMinutes] = useState("15");
+  const [tutorMinutes, setTutorMinutes] = useState("20");
+
+  function savePlan() {
+    studyPlanService.update({
+      startTime,
+      studyMinutes: Number(studyMinutes),
+      breakMinutes: Number(breakMinutes),
+      tutorMinutes: Number(tutorMinutes),
+    });
+    setAdjusting(false);
+    toast.success("Your study plan has been updated");
+  }
 
   return (
     <div>
       <PageHeader
         title="Study Plan"
         description={`Scheduled around your peak focus window, ${profile.peakHours}.`}
-        action={<Button variant="outline" onClick={() => toast.success("Your plan has been refreshed around your focus window")}>Adjust plan</Button>}
+        action={
+          <Button variant="outline" onClick={() => setAdjusting(true)}>
+            Adjust plan
+          </Button>
+        }
       />
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -55,7 +88,11 @@ function StudyPlanPage() {
                       </p>
                     </div>
                     <Pill tone={slot.kind === "break" ? "neutral" : "primary"}>
-                      {slot.kind === "break" ? "Rest" : slot.kind === "tutor" ? "AI tutor" : "Focus"}
+                      {slot.kind === "break"
+                        ? "Rest"
+                        : slot.kind === "tutor"
+                          ? "AI tutor"
+                          : "Focus"}
                     </Pill>
                   </div>
                 </li>
@@ -73,6 +110,89 @@ function StudyPlanPage() {
           </p>
         </Card>
       </div>
+
+      <Dialog open={adjusting} onOpenChange={setAdjusting}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Adjust your study plan</DialogTitle>
+            <DialogDescription>
+              Choose when to begin and how long each learning block should be.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-2 sm:grid-cols-2">
+            <div className="space-y-2 sm:col-span-2">
+              <Label htmlFor="plan-start">Start time</Label>
+              <Input
+                id="plan-start"
+                type="time"
+                value={startTime}
+                onChange={(event) => setStartTime(event.target.value)}
+              />
+            </div>
+            <DurationInput
+              id="study-duration"
+              label="Study block (minutes)"
+              value={studyMinutes}
+              onChange={setStudyMinutes}
+            />
+            <DurationInput
+              id="break-duration"
+              label="Break (minutes)"
+              value={breakMinutes}
+              onChange={setBreakMinutes}
+            />
+            <DurationInput
+              id="tutor-duration"
+              label="AI tutor session (minutes)"
+              value={tutorMinutes}
+              onChange={setTutorMinutes}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAdjusting(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={savePlan}
+              disabled={
+                !startTime ||
+                [studyMinutes, breakMinutes, tutorMinutes].some(
+                  (value) => Number(value) < 5 || Number(value) > 180,
+                )
+              }
+            >
+              Save plan
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+function DurationInput({
+  id,
+  label,
+  value,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="space-y-2">
+      <Label htmlFor={id}>{label}</Label>
+      <Input
+        id={id}
+        type="number"
+        min="5"
+        max="180"
+        step="5"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+      />
     </div>
   );
 }

@@ -15,8 +15,26 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as ParentRouteImport } from './routes/parent'
 import { Route as StudentRouteImport } from './routes/student'
+import { Route as AdminAssignmentsRouteImport } from './routes/admin.assignments'
+import { Route as AdminCareerRouteImport } from './routes/admin.career'
+import { Route as AdminMaterialsRouteImport } from './routes/admin.materials'
+import { Route as AdminReportsRouteImport } from './routes/admin.reports'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminStudentsRouteImport } from './routes/admin.students'
+import { Route as ParentIndexRouteImport } from './routes/parent.index'
+import { Route as ParentProfileRouteImport } from './routes/parent.profile'
+import { Route as ParentProgressRouteImport } from './routes/parent.progress'
+import { Route as ParentReportsRouteImport } from './routes/parent.reports'
+import { Route as ParentSettingsRouteImport } from './routes/parent.settings'
 import { Route as StudentIndexRouteImport } from './routes/student.index'
+import { Route as StudentCareerRouteImport } from './routes/student.career'
+import { Route as StudentInsightsRouteImport } from './routes/student.insights'
 import { Route as StudentLearningRouteImport } from './routes/student.learning'
+import { Route as StudentOnboardingRouteImport } from './routes/student.onboarding'
+import { Route as StudentProfileRouteImport } from './routes/student.profile'
+import { Route as StudentProgressRouteImport } from './routes/student.progress'
+import { Route as StudentReportsRouteImport } from './routes/student.reports'
+import { Route as StudentSettingsRouteImport } from './routes/student.settings'
 import { Route as StudentStudyPlanRouteImport } from './routes/student.study-plan'
 import { Route as StudentTutorRouteImport } from './routes/student.tutor'
 import { Route as StudentAssignmentsIndexRouteImport } from './routes/student.assignments.index'
@@ -52,14 +70,104 @@ const StudentRoute = StudentRouteImport.update({
   path: '/student',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAssignmentsRoute = AdminAssignmentsRouteImport.update({
+  id: '/assignments',
+  path: '/assignments',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCareerRoute = AdminCareerRouteImport.update({
+  id: '/career',
+  path: '/career',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMaterialsRoute = AdminMaterialsRouteImport.update({
+  id: '/materials',
+  path: '/materials',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminReportsRoute = AdminReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStudentsRoute = AdminStudentsRouteImport.update({
+  id: '/students',
+  path: '/students',
+  getParentRoute: () => AdminRoute,
+} as any)
+const ParentIndexRoute = ParentIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ParentRoute,
+} as any)
+const ParentProfileRoute = ParentProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => ParentRoute,
+} as any)
+const ParentProgressRoute = ParentProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
+  getParentRoute: () => ParentRoute,
+} as any)
+const ParentReportsRoute = ParentReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => ParentRoute,
+} as any)
+const ParentSettingsRoute = ParentSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => ParentRoute,
+} as any)
 const StudentIndexRoute = StudentIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => StudentRoute,
 } as any)
+const StudentCareerRoute = StudentCareerRouteImport.update({
+  id: '/career',
+  path: '/career',
+  getParentRoute: () => StudentRoute,
+} as any)
+const StudentInsightsRoute = StudentInsightsRouteImport.update({
+  id: '/insights',
+  path: '/insights',
+  getParentRoute: () => StudentRoute,
+} as any)
 const StudentLearningRoute = StudentLearningRouteImport.update({
   id: '/learning',
   path: '/learning',
+  getParentRoute: () => StudentRoute,
+} as any)
+const StudentOnboardingRoute = StudentOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => StudentRoute,
+} as any)
+const StudentProfileRoute = StudentProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => StudentRoute,
+} as any)
+const StudentProgressRoute = StudentProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
+  getParentRoute: () => StudentRoute,
+} as any)
+const StudentReportsRoute = StudentReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => StudentRoute,
+} as any)
+const StudentSettingsRoute = StudentSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => StudentRoute,
 } as any)
 const StudentStudyPlanRoute = StudentStudyPlanRouteImport.update({
@@ -86,27 +194,62 @@ const StudentAssignmentsAssignmentIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
-  '/parent': typeof ParentRoute
+  '/parent': typeof ParentRouteWithChildren
   '/student': typeof StudentRouteWithChildren
+  '/admin/assignments': typeof AdminAssignmentsRoute
+  '/admin/career': typeof AdminCareerRoute
+  '/admin/materials': typeof AdminMaterialsRoute
+  '/admin/reports': typeof AdminReportsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/students': typeof AdminStudentsRoute
+  '/parent/profile': typeof ParentProfileRoute
+  '/parent/progress': typeof ParentProgressRoute
+  '/parent/reports': typeof ParentReportsRoute
+  '/parent/settings': typeof ParentSettingsRoute
+  '/student/career': typeof StudentCareerRoute
+  '/student/insights': typeof StudentInsightsRoute
   '/student/learning': typeof StudentLearningRoute
+  '/student/onboarding': typeof StudentOnboardingRoute
+  '/student/profile': typeof StudentProfileRoute
+  '/student/progress': typeof StudentProgressRoute
+  '/student/reports': typeof StudentReportsRoute
+  '/student/settings': typeof StudentSettingsRoute
   '/student/study-plan': typeof StudentStudyPlanRoute
   '/student/tutor': typeof StudentTutorRoute
+  '/parent/': typeof ParentIndexRoute
   '/student/': typeof StudentIndexRoute
   '/student/assignments/$assignmentId': typeof StudentAssignmentsAssignmentIdRoute
   '/student/assignments/': typeof StudentAssignmentsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
-  '/parent': typeof ParentRoute
+  '/admin/assignments': typeof AdminAssignmentsRoute
+  '/admin/career': typeof AdminCareerRoute
+  '/admin/materials': typeof AdminMaterialsRoute
+  '/admin/reports': typeof AdminReportsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/students': typeof AdminStudentsRoute
+  '/parent/profile': typeof ParentProfileRoute
+  '/parent/progress': typeof ParentProgressRoute
+  '/parent/reports': typeof ParentReportsRoute
+  '/parent/settings': typeof ParentSettingsRoute
+  '/student/career': typeof StudentCareerRoute
+  '/student/insights': typeof StudentInsightsRoute
   '/student/learning': typeof StudentLearningRoute
+  '/student/onboarding': typeof StudentOnboardingRoute
+  '/student/profile': typeof StudentProfileRoute
+  '/student/progress': typeof StudentProgressRoute
+  '/student/reports': typeof StudentReportsRoute
+  '/student/settings': typeof StudentSettingsRoute
   '/student/study-plan': typeof StudentStudyPlanRoute
   '/student/tutor': typeof StudentTutorRoute
+  '/parent': typeof ParentIndexRoute
   '/student': typeof StudentIndexRoute
   '/student/assignments/$assignmentId': typeof StudentAssignmentsAssignmentIdRoute
   '/student/assignments': typeof StudentAssignmentsIndexRoute
@@ -114,14 +257,32 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
-  '/parent': typeof ParentRoute
+  '/parent': typeof ParentRouteWithChildren
   '/student': typeof StudentRouteWithChildren
+  '/admin/assignments': typeof AdminAssignmentsRoute
+  '/admin/career': typeof AdminCareerRoute
+  '/admin/materials': typeof AdminMaterialsRoute
+  '/admin/reports': typeof AdminReportsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/students': typeof AdminStudentsRoute
+  '/parent/profile': typeof ParentProfileRoute
+  '/parent/progress': typeof ParentProgressRoute
+  '/parent/reports': typeof ParentReportsRoute
+  '/parent/settings': typeof ParentSettingsRoute
+  '/student/career': typeof StudentCareerRoute
+  '/student/insights': typeof StudentInsightsRoute
   '/student/learning': typeof StudentLearningRoute
+  '/student/onboarding': typeof StudentOnboardingRoute
+  '/student/profile': typeof StudentProfileRoute
+  '/student/progress': typeof StudentProgressRoute
+  '/student/reports': typeof StudentReportsRoute
+  '/student/settings': typeof StudentSettingsRoute
   '/student/study-plan': typeof StudentStudyPlanRoute
   '/student/tutor': typeof StudentTutorRoute
+  '/parent/': typeof ParentIndexRoute
   '/student/': typeof StudentIndexRoute
   '/student/assignments/$assignmentId': typeof StudentAssignmentsAssignmentIdRoute
   '/student/assignments/': typeof StudentAssignmentsIndexRoute
@@ -135,9 +296,27 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/parent'
     | '/student'
+    | '/admin/assignments'
+    | '/admin/career'
+    | '/admin/materials'
+    | '/admin/reports'
+    | '/admin/settings'
+    | '/admin/students'
+    | '/parent/profile'
+    | '/parent/progress'
+    | '/parent/reports'
+    | '/parent/settings'
+    | '/student/career'
+    | '/student/insights'
     | '/student/learning'
+    | '/student/onboarding'
+    | '/student/profile'
+    | '/student/progress'
+    | '/student/reports'
+    | '/student/settings'
     | '/student/study-plan'
     | '/student/tutor'
+    | '/parent/'
     | '/student/'
     | '/student/assignments/$assignmentId'
     | '/student/assignments/'
@@ -147,10 +326,27 @@ export interface FileRouteTypes {
     | '/admin'
     | '/login'
     | '/onboarding'
-    | '/parent'
+    | '/admin/assignments'
+    | '/admin/career'
+    | '/admin/materials'
+    | '/admin/reports'
+    | '/admin/settings'
+    | '/admin/students'
+    | '/parent/profile'
+    | '/parent/progress'
+    | '/parent/reports'
+    | '/parent/settings'
+    | '/student/career'
+    | '/student/insights'
     | '/student/learning'
+    | '/student/onboarding'
+    | '/student/profile'
+    | '/student/progress'
+    | '/student/reports'
+    | '/student/settings'
     | '/student/study-plan'
     | '/student/tutor'
+    | '/parent'
     | '/student'
     | '/student/assignments/$assignmentId'
     | '/student/assignments'
@@ -162,9 +358,27 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/parent'
     | '/student'
+    | '/admin/assignments'
+    | '/admin/career'
+    | '/admin/materials'
+    | '/admin/reports'
+    | '/admin/settings'
+    | '/admin/students'
+    | '/parent/profile'
+    | '/parent/progress'
+    | '/parent/reports'
+    | '/parent/settings'
+    | '/student/career'
+    | '/student/insights'
     | '/student/learning'
+    | '/student/onboarding'
+    | '/student/profile'
+    | '/student/progress'
+    | '/student/reports'
+    | '/student/settings'
     | '/student/study-plan'
     | '/student/tutor'
+    | '/parent/'
     | '/student/'
     | '/student/assignments/$assignmentId'
     | '/student/assignments/'
@@ -172,10 +386,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
-  ParentRoute: typeof ParentRoute
+  ParentRoute: typeof ParentRouteWithChildren
   StudentRoute: typeof StudentRouteWithChildren
 }
 
@@ -223,6 +437,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/assignments': {
+      id: '/admin/assignments'
+      path: '/assignments'
+      fullPath: '/admin/assignments'
+      preLoaderRoute: typeof AdminAssignmentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/career': {
+      id: '/admin/career'
+      path: '/career'
+      fullPath: '/admin/career'
+      preLoaderRoute: typeof AdminCareerRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/materials': {
+      id: '/admin/materials'
+      path: '/materials'
+      fullPath: '/admin/materials'
+      preLoaderRoute: typeof AdminMaterialsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/reports': {
+      id: '/admin/reports'
+      path: '/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AdminReportsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/students': {
+      id: '/admin/students'
+      path: '/students'
+      fullPath: '/admin/students'
+      preLoaderRoute: typeof AdminStudentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/parent/': {
+      id: '/parent/'
+      path: '/'
+      fullPath: '/parent/'
+      preLoaderRoute: typeof ParentIndexRouteImport
+      parentRoute: typeof ParentRoute
+    }
+    '/parent/profile': {
+      id: '/parent/profile'
+      path: '/profile'
+      fullPath: '/parent/profile'
+      preLoaderRoute: typeof ParentProfileRouteImport
+      parentRoute: typeof ParentRoute
+    }
+    '/parent/progress': {
+      id: '/parent/progress'
+      path: '/progress'
+      fullPath: '/parent/progress'
+      preLoaderRoute: typeof ParentProgressRouteImport
+      parentRoute: typeof ParentRoute
+    }
+    '/parent/reports': {
+      id: '/parent/reports'
+      path: '/reports'
+      fullPath: '/parent/reports'
+      preLoaderRoute: typeof ParentReportsRouteImport
+      parentRoute: typeof ParentRoute
+    }
+    '/parent/settings': {
+      id: '/parent/settings'
+      path: '/settings'
+      fullPath: '/parent/settings'
+      preLoaderRoute: typeof ParentSettingsRouteImport
+      parentRoute: typeof ParentRoute
+    }
     '/student/': {
       id: '/student/'
       path: '/'
@@ -230,11 +521,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudentIndexRouteImport
       parentRoute: typeof StudentRoute
     }
+    '/student/career': {
+      id: '/student/career'
+      path: '/career'
+      fullPath: '/student/career'
+      preLoaderRoute: typeof StudentCareerRouteImport
+      parentRoute: typeof StudentRoute
+    }
+    '/student/insights': {
+      id: '/student/insights'
+      path: '/insights'
+      fullPath: '/student/insights'
+      preLoaderRoute: typeof StudentInsightsRouteImport
+      parentRoute: typeof StudentRoute
+    }
     '/student/learning': {
       id: '/student/learning'
       path: '/learning'
       fullPath: '/student/learning'
       preLoaderRoute: typeof StudentLearningRouteImport
+      parentRoute: typeof StudentRoute
+    }
+    '/student/onboarding': {
+      id: '/student/onboarding'
+      path: '/onboarding'
+      fullPath: '/student/onboarding'
+      preLoaderRoute: typeof StudentOnboardingRouteImport
+      parentRoute: typeof StudentRoute
+    }
+    '/student/profile': {
+      id: '/student/profile'
+      path: '/profile'
+      fullPath: '/student/profile'
+      preLoaderRoute: typeof StudentProfileRouteImport
+      parentRoute: typeof StudentRoute
+    }
+    '/student/progress': {
+      id: '/student/progress'
+      path: '/progress'
+      fullPath: '/student/progress'
+      preLoaderRoute: typeof StudentProgressRouteImport
+      parentRoute: typeof StudentRoute
+    }
+    '/student/reports': {
+      id: '/student/reports'
+      path: '/reports'
+      fullPath: '/student/reports'
+      preLoaderRoute: typeof StudentReportsRouteImport
+      parentRoute: typeof StudentRoute
+    }
+    '/student/settings': {
+      id: '/student/settings'
+      path: '/settings'
+      fullPath: '/student/settings'
+      preLoaderRoute: typeof StudentSettingsRouteImport
       parentRoute: typeof StudentRoute
     }
     '/student/study-plan': {
@@ -268,8 +608,54 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminAssignmentsRoute: typeof AdminAssignmentsRoute
+  AdminCareerRoute: typeof AdminCareerRoute
+  AdminMaterialsRoute: typeof AdminMaterialsRoute
+  AdminReportsRoute: typeof AdminReportsRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminStudentsRoute: typeof AdminStudentsRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAssignmentsRoute: AdminAssignmentsRoute,
+  AdminCareerRoute: AdminCareerRoute,
+  AdminMaterialsRoute: AdminMaterialsRoute,
+  AdminReportsRoute: AdminReportsRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminStudentsRoute: AdminStudentsRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface ParentRouteChildren {
+  ParentProfileRoute: typeof ParentProfileRoute
+  ParentProgressRoute: typeof ParentProgressRoute
+  ParentReportsRoute: typeof ParentReportsRoute
+  ParentSettingsRoute: typeof ParentSettingsRoute
+  ParentIndexRoute: typeof ParentIndexRoute
+}
+
+const ParentRouteChildren: ParentRouteChildren = {
+  ParentProfileRoute: ParentProfileRoute,
+  ParentProgressRoute: ParentProgressRoute,
+  ParentReportsRoute: ParentReportsRoute,
+  ParentSettingsRoute: ParentSettingsRoute,
+  ParentIndexRoute: ParentIndexRoute,
+}
+
+const ParentRouteWithChildren =
+  ParentRoute._addFileChildren(ParentRouteChildren)
+
 interface StudentRouteChildren {
+  StudentCareerRoute: typeof StudentCareerRoute
+  StudentInsightsRoute: typeof StudentInsightsRoute
   StudentLearningRoute: typeof StudentLearningRoute
+  StudentOnboardingRoute: typeof StudentOnboardingRoute
+  StudentProfileRoute: typeof StudentProfileRoute
+  StudentProgressRoute: typeof StudentProgressRoute
+  StudentReportsRoute: typeof StudentReportsRoute
+  StudentSettingsRoute: typeof StudentSettingsRoute
   StudentStudyPlanRoute: typeof StudentStudyPlanRoute
   StudentTutorRoute: typeof StudentTutorRoute
   StudentIndexRoute: typeof StudentIndexRoute
@@ -278,7 +664,14 @@ interface StudentRouteChildren {
 }
 
 const StudentRouteChildren: StudentRouteChildren = {
+  StudentCareerRoute: StudentCareerRoute,
+  StudentInsightsRoute: StudentInsightsRoute,
   StudentLearningRoute: StudentLearningRoute,
+  StudentOnboardingRoute: StudentOnboardingRoute,
+  StudentProfileRoute: StudentProfileRoute,
+  StudentProgressRoute: StudentProgressRoute,
+  StudentReportsRoute: StudentReportsRoute,
+  StudentSettingsRoute: StudentSettingsRoute,
   StudentStudyPlanRoute: StudentStudyPlanRoute,
   StudentTutorRoute: StudentTutorRoute,
   StudentIndexRoute: StudentIndexRoute,
@@ -291,10 +684,10 @@ const StudentRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
-  ParentRoute: ParentRoute,
+  ParentRoute: ParentRouteWithChildren,
   StudentRoute: StudentRouteWithChildren,
 }
 export const routeTree = rootRouteImport

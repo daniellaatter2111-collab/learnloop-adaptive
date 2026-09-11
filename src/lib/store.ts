@@ -8,6 +8,8 @@ import type {
   OnboardingData,
   Student,
   TutorMessage,
+  StudyPlanItem,
+  Theme,
   User,
 } from "@/types";
 import { mockStudents } from "@/data/mockStudents";
@@ -15,6 +17,7 @@ import { mockAssignments } from "@/data/mockAssignments";
 import { mockMaterials } from "@/data/mockCourses";
 import { mockLearningProfile } from "@/data/mockLearningProfile";
 import { mockLearningItems } from "@/data/mockCourses";
+import { studyPlan } from "@/data/mockReports";
 
 export type AppState = {
   user: User | null;
@@ -26,6 +29,8 @@ export type AppState = {
   onboarding: OnboardingData | null;
   onboardingComplete: boolean;
   tutorMessages: TutorMessage[];
+  studyPlan: StudyPlanItem[];
+  theme: Theme;
   notifications: Notification[];
   hydrated: boolean;
 };
@@ -42,6 +47,8 @@ export const initialState: AppState = {
   onboarding: null,
   onboardingComplete: false,
   tutorMessages: [],
+  studyPlan: [...studyPlan],
+  theme: "light",
   notifications: [
     {
       id: "n1",

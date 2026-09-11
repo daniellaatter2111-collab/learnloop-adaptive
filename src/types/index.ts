@@ -93,6 +93,15 @@ export type TutorMessage = {
   timestamp: number;
 };
 
+export type StudyPlanItem = {
+  time: string;
+  title: string;
+  duration: string;
+  kind: "study" | "break" | "tutor";
+};
+
+export type Theme = "light" | "dark";
+
 export type Notification = {
   id: string;
   title: string;
