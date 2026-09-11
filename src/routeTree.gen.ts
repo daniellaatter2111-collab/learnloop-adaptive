@@ -17,7 +17,6 @@ import { Route as ParentRouteImport } from './routes/parent'
 import { Route as StudentRouteImport } from './routes/student'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAssignmentsRouteImport } from './routes/admin.assignments'
-import { Route as AdminCareerRouteImport } from './routes/admin.career'
 import { Route as AdminMaterialsRouteImport } from './routes/admin.materials'
 import { Route as AdminReportsRouteImport } from './routes/admin.reports'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
@@ -79,11 +78,6 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
 const AdminAssignmentsRoute = AdminAssignmentsRouteImport.update({
   id: '/assignments',
   path: '/assignments',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCareerRoute = AdminCareerRouteImport.update({
-  id: '/career',
-  path: '/career',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminMaterialsRoute = AdminMaterialsRouteImport.update({
@@ -206,7 +200,6 @@ export interface FileRoutesByFullPath {
   '/parent': typeof ParentRouteWithChildren
   '/student': typeof StudentRouteWithChildren
   '/admin/assignments': typeof AdminAssignmentsRoute
-  '/admin/career': typeof AdminCareerRoute
   '/admin/materials': typeof AdminMaterialsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -236,7 +229,6 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/admin/assignments': typeof AdminAssignmentsRoute
-  '/admin/career': typeof AdminCareerRoute
   '/admin/materials': typeof AdminMaterialsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -270,7 +262,6 @@ export interface FileRoutesById {
   '/parent': typeof ParentRouteWithChildren
   '/student': typeof StudentRouteWithChildren
   '/admin/assignments': typeof AdminAssignmentsRoute
-  '/admin/career': typeof AdminCareerRoute
   '/admin/materials': typeof AdminMaterialsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -305,7 +296,6 @@ export interface FileRouteTypes {
     | '/parent'
     | '/student'
     | '/admin/assignments'
-    | '/admin/career'
     | '/admin/materials'
     | '/admin/reports'
     | '/admin/settings'
@@ -335,7 +325,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/onboarding'
     | '/admin/assignments'
-    | '/admin/career'
     | '/admin/materials'
     | '/admin/reports'
     | '/admin/settings'
@@ -368,7 +357,6 @@ export interface FileRouteTypes {
     | '/parent'
     | '/student'
     | '/admin/assignments'
-    | '/admin/career'
     | '/admin/materials'
     | '/admin/reports'
     | '/admin/settings'
@@ -459,13 +447,6 @@ declare module '@tanstack/react-router' {
       path: '/assignments'
       fullPath: '/admin/assignments'
       preLoaderRoute: typeof AdminAssignmentsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/career': {
-      id: '/admin/career'
-      path: '/career'
-      fullPath: '/admin/career'
-      preLoaderRoute: typeof AdminCareerRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/materials': {
@@ -627,7 +608,6 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminAssignmentsRoute: typeof AdminAssignmentsRoute
-  AdminCareerRoute: typeof AdminCareerRoute
   AdminMaterialsRoute: typeof AdminMaterialsRoute
   AdminReportsRoute: typeof AdminReportsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
@@ -637,7 +617,6 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAssignmentsRoute: AdminAssignmentsRoute,
-  AdminCareerRoute: AdminCareerRoute,
   AdminMaterialsRoute: AdminMaterialsRoute,
   AdminReportsRoute: AdminReportsRoute,
   AdminSettingsRoute: AdminSettingsRoute,

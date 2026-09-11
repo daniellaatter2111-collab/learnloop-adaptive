@@ -181,6 +181,35 @@ export function CareerPage() {
   );
 }
 
+function downloadMonthlyReport(child: boolean) {
+  const learnerName = child ? "Alex" : "Your";
+  const reportText = [
+    `LearnLoop ${monthlyReport.month} Learning Report`,
+    "",
+    `${learnerName} learning summary`,
+    monthlyReport.summary,
+    "",
+    "Key metrics",
+    ...monthlyReport.metrics.map((metric) => `- ${metric.label}: ${metric.value}`),
+    "",
+    "Performance this month",
+    ...monthlyReport.performance.map((week) => `- ${week.week}: ${week.score}%`),
+    "",
+    "Next steps",
+    ...monthlyReport.nextSteps.map((step) => `- ${step}`),
+  ].join("\n");
+  const blob = new Blob([reportText], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `learnloop-${monthlyReport.month.toLowerCase().replace(/\s+/g, "-")}-report.txt`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+  toast.success("Report downloaded");
+}
+
 export function ReportsPage({ child = false }: { child?: boolean }) {
   return (
     <div className="space-y-6">
@@ -211,8 +240,8 @@ export function ReportsPage({ child = false }: { child?: boolean }) {
               <li key={s}>• {s}</li>
             ))}
           </ul>
-          <Button className="mt-6" onClick={() => toast.success("Report download prepared")}>
-            Download report
+          <Button className="mt-6" onClick={() => downloadMonthlyReport(child)}>
+            <Download className="size-4" /> Download report
           </Button>
         </Card>
       </div>
@@ -674,14 +703,6 @@ export function AdminReportsPage() {
         <SubjectBarChart data={subjectProgress} />
       </Card>
       <ReportsPage />
-    </div>
-  );
-}
-export function AdminCareerPage() {
-  return (
-    <div>
-      <PageHeader title="Career insights" description="Strength-led paths across your learners." />
-      <CareerPage />
     </div>
   );
 }

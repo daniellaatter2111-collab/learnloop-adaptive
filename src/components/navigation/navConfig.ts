@@ -1,5 +1,4 @@
 import {
-  BarChart3,
   Bell,
   BookOpen,
   Brain,
@@ -36,7 +35,6 @@ export const adminNav = [
   { to: "/admin/assignments", label: "Assignments", icon: ClipboardList },
   { to: "/admin/materials", label: "Course Materials", icon: Upload },
   { to: "/admin/reports", label: "Reports", icon: FileText },
-  { to: "/admin/career", label: "Career Insights", icon: BarChart3 },
   { to: "/admin/settings", label: "Settings", icon: Settings },
 ] as const;
 
