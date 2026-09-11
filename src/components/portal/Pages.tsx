@@ -1,8 +1,19 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Briefcase, Download, Plus, Trash2, Upload, UserPlus } from "lucide-react";
-import { ActivityChart, PerformanceChart, SubjectBarChart } from "@/components/charts/Charts";
+import {
+  Award,
+  Briefcase,
+  CheckCircle2,
+  Download,
+  Flame,
+  Plus,
+  Target,
+  Trash2,
+  Upload,
+  UserPlus,
+} from "lucide-react";
+import { PerformanceChart, SubjectBarChart } from "@/components/charts/Charts";
 import {
   Card,
   CardHeading,
@@ -28,20 +39,94 @@ export function ProgressPage({ child = false }: { child?: boolean }) {
     <div className="space-y-6">
       <PageHeader
         title={child ? "Alex's progress" : "Your progress"}
-        description="A clear view of performance and study consistency."
+        description="Track the results of your learning and stay on course with your weekly goal."
       />
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeading title="Study activity" description="Hours studied this week" />
-          <ActivityChart data={weeklyActivity} />
-        </Card>
+        <WeeklyGoalCard />
         <Card>
           <CardHeading title="Subject progress" description="Completion across current subjects" />
           <SubjectBarChart data={subjectProgress} />
         </Card>
       </div>
+      <ProgressHighlights />
       <SubjectTable />
     </div>
+  );
+}
+
+function WeeklyGoalCard() {
+  const completedHours = 4;
+  const goalHours = 5;
+  const goalProgress = (completedHours / goalHours) * 100;
+
+  return (
+    <Card>
+      <CardHeading
+        title="Weekly learning goal"
+        description="Build a steady habit, one focused session at a time."
+      />
+      <div className="flex items-center gap-5 rounded-xl bg-primary-soft p-5">
+        <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
+          <Target className="size-6" aria-hidden />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-2xl font-semibold">
+            {completedHours}h of {goalHours}h
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            You are one hour away from this week's goal.
+          </p>
+          <ProgressBar value={goalProgress} className="mt-3" label="Weekly learning goal" />
+        </div>
+      </div>
+      <div className="mt-5 flex items-center gap-2 text-sm font-medium text-success">
+        <Flame className="size-4" aria-hidden />
+        12-day learning streak — keep it going!
+      </div>
+    </Card>
+  );
+}
+
+function ProgressHighlights() {
+  const highlights = [
+    {
+      icon: Award,
+      label: "Strongest subject",
+      value: "Chemistry",
+      detail: "93% average score",
+      tone: "text-primary bg-primary-soft",
+    },
+    {
+      icon: CheckCircle2,
+      label: "Assignments completed",
+      value: "34 of 40",
+      detail: "6 remaining this term",
+      tone: "text-success bg-success-soft",
+    },
+    {
+      icon: Flame,
+      label: "Current streak",
+      value: "12 days",
+      detail: "Your longest this month",
+      tone: "text-warning bg-warning-soft",
+    },
+  ];
+
+  return (
+    <section aria-label="Progress highlights" className="grid gap-4 md:grid-cols-3">
+      {highlights.map(({ icon: Icon, label, value, detail, tone }) => (
+        <Card key={label} className="flex items-start gap-4 p-5">
+          <div className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${tone}`}>
+            <Icon className="size-5" aria-hidden />
+          </div>
+          <div>
+            <p className="meta-text">{label}</p>
+            <p className="mt-1 text-lg font-semibold">{value}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{detail}</p>
+          </div>
+        </Card>
+      ))}
+    </section>
   );
 }
 
