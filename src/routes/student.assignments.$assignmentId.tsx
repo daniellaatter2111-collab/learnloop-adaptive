@@ -11,6 +11,7 @@ import {
 } from "@/components/shared/Primitives";
 import { Button } from "@/components/ui/button";
 import { useAssignments } from "@/hooks/useAssignments";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/student/assignments/$assignmentId")({
   head: () => ({
@@ -29,7 +30,8 @@ export const Route = createFileRoute("/student/assignments/$assignmentId")({
 
 function AssignmentDetail() {
   const { assignmentId } = useParams({ from: "/student/assignments/$assignmentId" });
-  const { assignments, setProgress } = useAssignments("stu-1");
+  const { user } = useAuth();
+  const { assignments, setProgress } = useAssignments(user?.studentId);
   const assignment = assignments.find((a) => a.id === assignmentId);
 
   if (!assignment) {

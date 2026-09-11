@@ -225,7 +225,14 @@ export function SettingsPage({ role }: { role: "student" | "admin" | "parent" })
   const { theme } = useAppState();
   return (
     <div className="space-y-6">
-      <PageHeader title="Settings" description="Manage your preferences." />
+      <PageHeader
+        title="Settings"
+        description={
+          role === "admin"
+            ? "Manage your teaching workspace preferences."
+            : "Manage your preferences."
+        }
+      />
       <Card className="max-w-xl">
         <CardHeading
           title="Appearance"
@@ -233,8 +240,8 @@ export function SettingsPage({ role }: { role: "student" | "admin" | "parent" })
         />
         <div className="flex items-center justify-between gap-4 text-sm">
           <div>
-            <p className="font-medium">Dark mode</p>
-            <p className="meta-text mt-1">Use a darker interface across LearnLoop.</p>
+            <p className="font-medium">{theme === "dark" ? "Dark theme" : "Light theme"}</p>
+            <p className="meta-text mt-1">Switch between light and dark mode across LearnLoop.</p>
           </div>
           <Switch
             checked={theme === "dark"}
@@ -270,6 +277,8 @@ export function SettingsPage({ role }: { role: "student" | "admin" | "parent" })
 export function AdminDashboard() {
   const { students } = useStudents();
   const { assignments } = useAssignments();
+  const studentIds = new Set(students.map((student) => student.id));
+  const classAssignments = assignments.filter((assignment) => studentIds.has(assignment.studentId));
   return (
     <div className="space-y-6">
       <PageHeader
@@ -278,7 +287,7 @@ export function AdminDashboard() {
       />
       <div className="grid gap-4 sm:grid-cols-3">
         <Metric label="Students" value={students.length} />
-        <Metric label="Assignments" value={assignments.length} />
+        <Metric label="Assignments" value={classAssignments.length} />
         <Metric
           label="Needs attention"
           value={students.filter((s) => s.status === "Needs attention").length}
@@ -303,14 +312,24 @@ function Metric({ label, value }: { label: string; value: number }) {
 export function AdminStudentsPage() {
   const { students, createStudent, removeStudent } = useStudents();
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [id, setId] = useState("");
+  const [query, setQuery] = useState("");
+  const visibleStudents = students.filter((student) =>
+    `${student.name} ${student.email}`.toLowerCase().includes(query.trim().toLowerCase()),
+  );
   function submit(e: FormEvent) {
     e.preventDefault();
     if (!name.trim()) return;
-    createStudent({ name, id, academicLevel: "Grade 11" });
-    setName("");
-    setId("");
-    toast.success("Student added");
+    try {
+      createStudent({ name, email, id, academicLevel: "Grade 11" });
+      setName("");
+      setEmail("");
+      setId("");
+      toast.success("Student added — they can now sign in with this email.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not add student.");
+    }
   }
   return (
     <div className="space-y-6">
@@ -326,6 +345,14 @@ export function AdminStudentsPage() {
             className="max-w-xs"
           />
           <Input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Student email"
+            type="email"
+            required
+            className="max-w-xs"
+          />
+          <Input
             value={id}
             onChange={(e) => setId(e.target.value)}
             placeholder="Student ID (optional)"
@@ -337,9 +364,16 @@ export function AdminStudentsPage() {
         </form>
       </Card>
       <Card>
-        <CardHeading title="All students" />
+        <CardHeading title="All students" description="Search by learner name or sign-in email." />
+        <Input
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Find a student by email"
+          type="search"
+          className="mb-4 max-w-sm"
+        />
         <div className="space-y-3">
-          {students.map((s) => (
+          {visibleStudents.map((s) => (
             <div
               key={s.id}
               className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3 last:border-0 last:pb-0"
@@ -347,7 +381,8 @@ export function AdminStudentsPage() {
               <div>
                 <p className="font-medium">{s.name}</p>
                 <p className="meta-text">
-                  {s.academicLevel} · {s.overallProgress}% progress · {s.engagement} engagement
+                  {s.email} · {s.academicLevel} · {s.overallProgress}% progress · {s.engagement}{" "}
+                  engagement
                 </p>
               </div>
               <Button
@@ -362,6 +397,9 @@ export function AdminStudentsPage() {
               </Button>
             </div>
           ))}
+          {!visibleStudents.length ? (
+            <p className="text-sm text-muted-foreground">No student matches that email or name.</p>
+          ) : null}
         </div>
       </Card>
     </div>
@@ -479,18 +517,30 @@ export function AdminAssignmentsPage() {
 
 export function AdminMaterialsPage() {
   const { materials, uploadMaterial, deleteMaterial } = useMaterials();
+  const { students } = useStudents();
   const [title, setTitle] = useState("");
+  const [subject, setSubject] = useState("Mathematics");
+  const [recipientId, setRecipientId] = useState("all");
+  const [fileName, setFileName] = useState<string | undefined>();
   function submit(e: FormEvent) {
     e.preventDefault();
     if (!title.trim()) return;
     uploadMaterial({
       title,
-      subject: "Mathematics",
+      subject,
       topic: "General",
       type: "document" as MaterialType,
+      recipientStudentIds:
+        recipientId === "all" ? students.map((student) => student.id) : [recipientId],
+      fileName,
     });
     setTitle("");
-    toast.success("Course material uploaded");
+    setFileName(undefined);
+    toast.success(
+      recipientId === "all"
+        ? "Material shared with your whole class."
+        : "Material shared with the selected student.",
+    );
   }
   return (
     <div className="space-y-6">
@@ -507,6 +557,37 @@ export function AdminMaterialsPage() {
             placeholder="Resource title"
             className="max-w-xs"
           />
+          <select
+            value={subject}
+            onChange={(event) => setSubject(event.target.value)}
+            className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+            aria-label="Subject"
+          >
+            {["Mathematics", "Physics", "Chemistry", "English"].map((item) => (
+              <option key={item}>{item}</option>
+            ))}
+          </select>
+          <select
+            value={recipientId}
+            onChange={(event) => setRecipientId(event.target.value)}
+            className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+            aria-label="Recipients"
+          >
+            <option value="all">All my students ({students.length})</option>
+            {students.map((student) => (
+              <option key={student.id} value={student.id}>
+                {student.name} · {student.email}
+              </option>
+            ))}
+          </select>
+          <label className="flex h-9 cursor-pointer items-center rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
+            <input
+              type="file"
+              className="sr-only"
+              onChange={(event) => setFileName(event.target.files?.[0]?.name)}
+            />
+            {fileName ?? "Attach file (optional)"}
+          </label>
           <Button type="submit">
             <Upload className="size-4" /> Upload material
           </Button>
@@ -522,7 +603,8 @@ export function AdminMaterialsPage() {
               <div>
                 <p className="font-medium">{m.title}</p>
                 <p className="meta-text">
-                  {m.subject} · {m.type} · Uploaded {m.uploadedAt}
+                  {m.subject} · {m.type} · Shared with {m.recipientStudentIds.length} learner
+                  {m.recipientStudentIds.length === 1 ? "" : "s"} · Uploaded {m.uploadedAt}
                 </p>
               </div>
               <Button

@@ -11,10 +11,14 @@ export const materialService = {
     subject: string;
     topic: string;
     type: MaterialType;
+    recipientStudentIds: string[];
+    fileName?: string;
   }): CourseMaterial {
+    const teacherId = getState().user?.role === "admin" ? getState().user.id : "teacher-sarah";
     const material: CourseMaterial = {
       ...input,
       id: `mat-${Date.now()}`,
+      teacherId,
       uploadedAt: new Date().toLocaleDateString("en-GB", {
         day: "numeric",
         month: "short",

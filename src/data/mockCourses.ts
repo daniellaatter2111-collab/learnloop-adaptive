@@ -103,6 +103,8 @@ export const mockMaterials: CourseMaterial[] = [
     topic: "Quadratic Equations",
     type: "pdf",
     uploadedAt: "2 Sep 2026",
+    teacherId: "teacher-sarah",
+    recipientStudentIds: ["stu-1", "stu-2", "stu-3", "stu-4"],
   },
   {
     id: "mat-2",
@@ -111,6 +113,8 @@ export const mockMaterials: CourseMaterial[] = [
     topic: "Motion",
     type: "slides",
     uploadedAt: "5 Sep 2026",
+    teacherId: "teacher-sarah",
+    recipientStudentIds: ["stu-1", "stu-2", "stu-3", "stu-4"],
   },
   {
     id: "mat-3",
@@ -119,5 +123,7 @@ export const mockMaterials: CourseMaterial[] = [
     topic: "Chemical Bonding",
     type: "video",
     uploadedAt: "8 Sep 2026",
+    teacherId: "teacher-sarah",
+    recipientStudentIds: ["stu-1", "stu-2", "stu-3", "stu-4"],
   },
 ];

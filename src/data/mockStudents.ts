@@ -4,6 +4,8 @@ export const mockStudents: Student[] = [
   {
     id: "stu-1",
     name: "Alex Morgan",
+    email: "alex@learnloop.app",
+    teacherId: "teacher-sarah",
     academicLevel: "Grade 11",
     learningStyle: "visual",
     confidence: 82,
@@ -18,6 +20,8 @@ export const mockStudents: Student[] = [
   {
     id: "stu-2",
     name: "Emma Davis",
+    email: "emma@learnloop.app",
+    teacherId: "teacher-sarah",
     academicLevel: "Grade 11",
     learningStyle: "audio",
     confidence: 74,
@@ -32,6 +36,8 @@ export const mockStudents: Student[] = [
   {
     id: "stu-3",
     name: "Noah Bennett",
+    email: "noah@learnloop.app",
+    teacherId: "teacher-sarah",
     academicLevel: "Grade 10",
     learningStyle: "visual",
     confidence: 68,
@@ -46,6 +52,8 @@ export const mockStudents: Student[] = [
   {
     id: "stu-4",
     name: "Zara Ahmed",
+    email: "zara@learnloop.app",
+    teacherId: "teacher-sarah",
     academicLevel: "Grade 12",
     learningStyle: "audio",
     confidence: 61,

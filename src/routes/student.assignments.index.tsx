@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAssignments } from "@/hooks/useAssignments";
+import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import type { AssignmentStatus } from "@/types";
 
@@ -37,12 +38,14 @@ const filters: { value: "all" | AssignmentStatus; label: string }[] = [
 ];
 
 function AssignmentsPage() {
-  const { assignments } = useAssignments("stu-1");
+  const { user } = useAuth();
+  const { assignments } = useAssignments(user?.studentId);
   const [filter, setFilter] = useState<"all" | AssignmentStatus>("all");
   const [query, setQuery] = useState("");
-  const list = (filter === "all" ? assignments : assignments.filter((a) => a.status === filter)).filter(
-    (assignment) =>
-      `${assignment.title} ${assignment.subject}`.toLowerCase().includes(query.trim().toLowerCase()),
+  const list = (
+    filter === "all" ? assignments : assignments.filter((a) => a.status === filter)
+  ).filter((assignment) =>
+    `${assignment.title} ${assignment.subject}`.toLowerCase().includes(query.trim().toLowerCase()),
   );
 
   return (

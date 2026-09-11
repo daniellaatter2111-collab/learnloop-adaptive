@@ -112,7 +112,19 @@ export function hydrate() {
   } catch {
     stored = {};
   }
-  state = { ...initialState, ...stored, hydrated: true };
+  // Older demo sessions did not include classroom ownership.  Normalise them
+  // so existing users seamlessly receive the new teacher-scoped experience.
+  const students = (stored.students ?? initialState.students).map((student) => ({
+    ...student,
+    email: student.email ?? `${student.id}@learnloop.app`,
+    teacherId: student.teacherId ?? "teacher-sarah",
+  }));
+  const materials = (stored.materials ?? initialState.materials).map((material) => ({
+    ...material,
+    teacherId: material.teacherId ?? "teacher-sarah",
+    recipientStudentIds: material.recipientStudentIds ?? students.map((student) => student.id),
+  }));
+  state = { ...initialState, ...stored, students, materials, hydrated: true };
   emit();
 }
 

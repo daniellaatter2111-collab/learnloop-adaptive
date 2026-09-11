@@ -13,6 +13,10 @@ export type LearningStyle = "visual" | "audio";
 export type Student = {
   id: string;
   name: string;
+  /** The unique identity used for sign-in and teacher progress lookup. */
+  email: string;
+  /** The teacher who owns this learner's class workspace. */
+  teacherId: string;
   academicLevel: string;
   learningStyle: LearningStyle;
   confidence: number;
@@ -47,6 +51,9 @@ export type CourseMaterial = {
   topic: string;
   type: MaterialType;
   uploadedAt: string;
+  teacherId: string;
+  recipientStudentIds: string[];
+  fileName?: string;
 };
 
 export type LearningProfile = {

@@ -10,10 +10,22 @@ export const studentService = {
     return getState().students.find((s) => s.id === id);
   },
 
-  createStudent(input: { name: string; id: string; academicLevel: string }): Student {
+  createStudent(input: {
+    name: string;
+    email: string;
+    id: string;
+    academicLevel: string;
+  }): Student {
+    const teacherId = getState().user?.role === "admin" ? getState().user.id : "teacher-sarah";
+    const email = input.email.trim().toLowerCase();
+    if (getState().students.some((student) => student.email.toLowerCase() === email)) {
+      throw new Error("A learner with this email already exists.");
+    }
     const student: Student = {
       id: input.id.trim() || `stu-${Date.now()}`,
       name: input.name.trim(),
+      email,
+      teacherId,
       academicLevel: input.academicLevel,
       learningStyle: "visual",
       confidence: 50,

@@ -9,7 +9,9 @@ import { ActivityChart } from "@/components/charts/Charts";
 import { Button } from "@/components/ui/button";
 import { useAssignments } from "@/hooks/useAssignments";
 import { useLearningProfile } from "@/hooks/useLearningProfile";
-import { useStudent } from "@/hooks/useStudents";
+import { useCurrentStudent, useStudent } from "@/hooks/useStudents";
+import { useMaterials } from "@/hooks/useMaterials";
+import { useAuth } from "@/hooks/useAuth";
 import { weeklyActivity } from "@/data/mockLearningProfile";
 
 export const Route = createFileRoute("/student/")({
@@ -28,9 +30,14 @@ export const Route = createFileRoute("/student/")({
 });
 
 function StudentDashboard() {
-  const student = useStudent("stu-1");
+  const currentStudent = useCurrentStudent();
+  const fallbackStudent = useStudent("stu-1");
+  const student = currentStudent ?? fallbackStudent;
+  const { user } = useAuth();
   const { profile, recommendations } = useLearningProfile();
-  const { assignments } = useAssignments("stu-1");
+  const { assignments } = useAssignments(student.id);
+  const { forStudent } = useMaterials();
+  const materials = forStudent(user?.studentId);
   const done = assignments.filter((a) => a.status === "completed").length;
   const upcoming = assignments.filter((a) => a.status !== "completed").slice(0, 3);
 
@@ -60,6 +67,33 @@ function StudentDashboard() {
       </div>
 
       <RecommendationList items={recommendations} learnerStyle={profile.style} />
+
+      <Card>
+        <CardHeading
+          title="Materials from your teacher"
+          description="Resources shared with your class."
+        />
+        {materials.length ? (
+          <ul className="divide-y divide-border">
+            {materials.slice(0, 3).map((material) => (
+              <li key={material.id} className="flex items-center justify-between gap-3 py-3">
+                <div>
+                  <p className="text-sm font-medium">{material.title}</p>
+                  <p className="meta-text">
+                    {material.subject} · {material.fileName ?? material.type} ·{" "}
+                    {material.uploadedAt}
+                  </p>
+                </div>
+                <span className="text-xs font-medium text-success">Shared</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            Your teacher has not shared any materials with you yet.
+          </p>
+        )}
+      </Card>
 
       <Card>
         <CardHeading

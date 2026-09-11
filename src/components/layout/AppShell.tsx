@@ -3,7 +3,7 @@ import { Outlet, useNavigate } from "@tanstack/react-router";
 import { AppSidebar } from "@/components/navigation/AppSidebar";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { useAuth } from "@/hooks/useAuth";
-import { useStudent } from "@/hooks/useStudents";
+import { useCurrentStudent, useStudent } from "@/hooks/useStudents";
 import type { UserRole } from "@/types";
 
 function greetingFor(role: UserRole, name: string, childName: string) {
@@ -16,6 +16,7 @@ function greetingFor(role: UserRole, name: string, childName: string) {
 export function AppShell({ role, children }: { role: UserRole; children?: ReactNode }) {
   const { user, hydrated, logout } = useAuth();
   const navigate = useNavigate();
+  const currentStudent = useCurrentStudent();
   const child = useStudent("stu-1");
 
   useEffect(() => {
@@ -23,7 +24,10 @@ export function AppShell({ role, children }: { role: UserRole; children?: ReactN
     if (!user) {
       navigate({ to: "/login", replace: true });
     } else if (user.role !== role) {
-      navigate({ to: user.role === "student" ? "/student" : user.role === "admin" ? "/admin" : "/parent", replace: true });
+      navigate({
+        to: user.role === "student" ? "/student" : user.role === "admin" ? "/admin" : "/parent",
+        replace: true,
+      });
     }
   }, [hydrated, user, role, navigate]);
 
@@ -65,7 +69,7 @@ export function AppShell({ role, children }: { role: UserRole; children?: ReactN
       <div className="flex min-w-0 flex-1 flex-col">
         <AppHeader
           user={user}
-          greeting={greetingFor(role, user.name, child?.name ?? "Alex")}
+          greeting={greetingFor(role, user.name, currentStudent?.name ?? child?.name ?? "Alex")}
           subline={subline}
           onLogout={handleLogout}
         />
