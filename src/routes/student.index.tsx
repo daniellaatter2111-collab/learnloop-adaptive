@@ -98,7 +98,7 @@ function StudentDashboard() {
                       className="mt-1.5 inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
                     >
                       <span className="inline-flex items-center gap-1 rounded-full bg-primary-soft px-2 py-0.5">
-                        <Sparkles className="size-3" aria-hidden /> Personalised video pick
+                        <Sparkles className="size-3" aria-hidden /> AI video pick
                       </span>
                       <Video className="size-3.5" aria-hidden /> {material.recommendedVideo.title}
                       <ExternalLink className="size-3" aria-hidden />

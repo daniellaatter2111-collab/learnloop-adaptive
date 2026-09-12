@@ -33,6 +33,7 @@ import { useStudents } from "@/hooks/useStudents";
 import { profileEvolution, weeklyActivity } from "@/data/mockLearningProfile";
 import { careerPaths, monthlyReport, subjectProgress } from "@/data/mockReports";
 import type { MaterialType } from "@/types";
+import { findYouTubeRecommendation } from "@/services/youtubeRecommendation.server";
 
 export function ProgressPage({ child = false }: { child?: boolean }) {
   return (
@@ -640,15 +641,6 @@ export function AdminAssignmentsPage() {
   );
 }
 
-function isYouTubeUrl(value: string) {
-  try {
-    const host = new URL(value).hostname.replace(/^www\./, "");
-    return host === "youtube.com" || host === "m.youtube.com" || host === "youtu.be";
-  } catch {
-    return false;
-  }
-}
-
 export function AdminMaterialsPage() {
   const { materials, uploadMaterial, deleteMaterial } = useMaterials();
   const { students } = useStudents();
@@ -656,48 +648,47 @@ export function AdminMaterialsPage() {
   const [subject, setSubject] = useState("Mathematics");
   const [topic, setTopic] = useState("");
   const [recipientId, setRecipientId] = useState("all");
-  const [videoTitle, setVideoTitle] = useState("");
-  const [videoUrl, setVideoUrl] = useState("");
+  const [addVideoRecommendation, setAddVideoRecommendation] = useState(true);
+  const [isFindingVideo, setIsFindingVideo] = useState(false);
   const [fileName, setFileName] = useState<string | undefined>();
   const [fileData, setFileData] = useState<string | undefined>();
   const [fileError, setFileError] = useState<string | null>(null);
   async function submit(e: FormEvent) {
     e.preventDefault();
     if (!title.trim()) return;
-    const trimmedVideoUrl = videoUrl.trim();
-    const trimmedVideoTitle = videoTitle.trim();
-    if (trimmedVideoUrl && !isYouTubeUrl(trimmedVideoUrl)) {
-      setFileError("Enter a valid YouTube video link.");
-      return;
+    const materialTitle = title.trim();
+    const materialTopic = topic.trim() || materialTitle;
+    setIsFindingVideo(addVideoRecommendation);
+    let recommendedVideo;
+    try {
+      recommendedVideo = addVideoRecommendation
+        ? await findYouTubeRecommendation({
+            data: { title: materialTitle, subject, topic: materialTopic },
+          })
+        : undefined;
+    } finally {
+      setIsFindingVideo(false);
     }
     uploadMaterial({
-      title: title.trim(),
+      title: materialTitle,
       subject,
-      topic: topic.trim() || title.trim(),
+      topic: materialTopic,
       type: "document" as MaterialType,
       recipientStudentIds:
         recipientId === "all" ? students.map((student) => student.id) : [recipientId],
       fileName,
       fileData,
-      ...(trimmedVideoUrl
-        ? {
-            recommendedVideo: {
-              title: trimmedVideoTitle || title.trim(),
-              url: trimmedVideoUrl,
-            },
-          }
-        : {}),
+      ...(recommendedVideo ? { recommendedVideo } : {}),
     });
     setTitle("");
     setTopic("");
     setFileName(undefined);
     setFileData(undefined);
-    setVideoTitle("");
-    setVideoUrl("");
+    const sharedWith = recipientId === "all" ? "your whole class" : "the selected student";
     toast.success(
-      recipientId === "all"
-        ? "Material shared with your whole class."
-        : "Material shared with the selected student.",
+      recommendedVideo
+        ? `Material and AI video recommendation shared with ${sharedWith}.`
+        : `Material shared with ${sharedWith}.`,
     );
   }
   return (
@@ -731,22 +722,14 @@ export function AdminMaterialsPage() {
             placeholder="Topic (e.g. Newton's Laws)"
             className="max-w-xs"
           />
-          <Input
-            value={videoTitle}
-            onChange={(event) => setVideoTitle(event.target.value)}
-            placeholder="Recommended video title (optional)"
-            className="max-w-xs"
-          />
-          <Input
-            value={videoUrl}
-            onChange={(event) => {
-              setVideoUrl(event.target.value);
-              setFileError(null);
-            }}
-            placeholder="One YouTube video link (optional)"
-            inputMode="url"
-            className="max-w-xs"
-          />
+          <label className="flex h-9 items-center gap-2 rounded-md border border-input bg-background px-3 text-sm">
+            <Switch
+              checked={addVideoRecommendation}
+              onCheckedChange={setAddVideoRecommendation}
+              aria-label="Find a YouTube video automatically"
+            />
+            AI video suggestion
+          </label>
           <select
             value={recipientId}
             onChange={(event) => setRecipientId(event.target.value)}
@@ -783,15 +766,18 @@ export function AdminMaterialsPage() {
             />
             {fileName ?? "Attach file (optional)"}
           </label>
-          <Button type="submit" disabled={Boolean(fileError || (fileName && !fileData))}>
-            <Upload className="size-4" /> Upload material
+          <Button
+            type="submit"
+            disabled={Boolean(fileError || (fileName && !fileData) || isFindingVideo)}
+          >
+            <Upload className="size-4" /> {isFindingVideo ? "Finding video…" : "Upload material"}
           </Button>
         </form>
         {fileError ? <p className="mt-3 text-sm text-danger">{fileError}</p> : null}
       </Card>
       <p className="-mt-3 text-xs text-muted-foreground">
-        Add one teacher-approved YouTube lesson to give audio and visual learners a focused video
-        recommendation instead of a search list.
+        When enabled, LearnLoop uses the resource title, subject, and topic to find a focused
+        YouTube lesson automatically, then shares it with audio and visual learners.
       </p>
       <Card>
         <div className="space-y-3">
@@ -808,7 +794,7 @@ export function AdminMaterialsPage() {
                 </p>
                 {m.recommendedVideo ? (
                   <p className="mt-1 text-xs font-medium text-primary">
-                    Video recommendation added
+                    AI video recommendation added
                   </p>
                 ) : null}
               </div>
