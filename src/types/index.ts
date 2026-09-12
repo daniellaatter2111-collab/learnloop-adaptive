@@ -56,6 +56,11 @@ export type CourseMaterial = {
   fileName?: string;
   /** A small local file stored as a data URL for this frontend prototype. */
   fileData?: string;
+  /** One teacher-approved YouTube lesson matched to this material. */
+  recommendedVideo?: {
+    title: string;
+    url: string;
+  };
 };
 
 export type LearningProfile = {

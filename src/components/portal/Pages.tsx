@@ -640,32 +640,60 @@ export function AdminAssignmentsPage() {
   );
 }
 
+function isYouTubeUrl(value: string) {
+  try {
+    const host = new URL(value).hostname.replace(/^www\./, "");
+    return host === "youtube.com" || host === "m.youtube.com" || host === "youtu.be";
+  } catch {
+    return false;
+  }
+}
+
 export function AdminMaterialsPage() {
   const { materials, uploadMaterial, deleteMaterial } = useMaterials();
   const { students } = useStudents();
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("Mathematics");
+  const [topic, setTopic] = useState("");
   const [recipientId, setRecipientId] = useState("all");
+  const [videoTitle, setVideoTitle] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
   const [fileName, setFileName] = useState<string | undefined>();
   const [fileData, setFileData] = useState<string | undefined>();
   const [fileError, setFileError] = useState<string | null>(null);
   async function submit(e: FormEvent) {
     e.preventDefault();
     if (!title.trim()) return;
-    const materialInput = {
-      title,
+    const trimmedVideoUrl = videoUrl.trim();
+    const trimmedVideoTitle = videoTitle.trim();
+    if (trimmedVideoUrl && !isYouTubeUrl(trimmedVideoUrl)) {
+      setFileError("Enter a valid YouTube video link.");
+      return;
+    }
+    uploadMaterial({
+      title: title.trim(),
       subject,
-      topic: "General",
+      topic: topic.trim() || title.trim(),
       type: "document" as MaterialType,
       recipientStudentIds:
         recipientId === "all" ? students.map((student) => student.id) : [recipientId],
-      ...(fileName ? { fileName } : {}),
-      ...(fileData ? { fileData } : {}),
-    };
-    uploadMaterial(materialInput);
+      fileName,
+      fileData,
+      ...(trimmedVideoUrl
+        ? {
+            recommendedVideo: {
+              title: trimmedVideoTitle || title.trim(),
+              url: trimmedVideoUrl,
+            },
+          }
+        : {}),
+    });
     setTitle("");
+    setTopic("");
     setFileName(undefined);
     setFileData(undefined);
+    setVideoTitle("");
+    setVideoUrl("");
     toast.success(
       recipientId === "all"
         ? "Material shared with your whole class."
@@ -697,6 +725,28 @@ export function AdminMaterialsPage() {
               <option key={item}>{item}</option>
             ))}
           </select>
+          <Input
+            value={topic}
+            onChange={(event) => setTopic(event.target.value)}
+            placeholder="Topic (e.g. Newton's Laws)"
+            className="max-w-xs"
+          />
+          <Input
+            value={videoTitle}
+            onChange={(event) => setVideoTitle(event.target.value)}
+            placeholder="Recommended video title (optional)"
+            className="max-w-xs"
+          />
+          <Input
+            value={videoUrl}
+            onChange={(event) => {
+              setVideoUrl(event.target.value);
+              setFileError(null);
+            }}
+            placeholder="One YouTube video link (optional)"
+            inputMode="url"
+            className="max-w-xs"
+          />
           <select
             value={recipientId}
             onChange={(event) => setRecipientId(event.target.value)}
@@ -739,6 +789,10 @@ export function AdminMaterialsPage() {
         </form>
         {fileError ? <p className="mt-3 text-sm text-danger">{fileError}</p> : null}
       </Card>
+      <p className="-mt-3 text-xs text-muted-foreground">
+        Add one teacher-approved YouTube lesson to give audio and visual learners a focused video
+        recommendation instead of a search list.
+      </p>
       <Card>
         <div className="space-y-3">
           {materials.map((m) => (
@@ -752,6 +806,11 @@ export function AdminMaterialsPage() {
                   {m.subject} · {m.type} · Shared with {m.recipientStudentIds.length} learner
                   {m.recipientStudentIds.length === 1 ? "" : "s"} · Uploaded {m.uploadedAt}
                 </p>
+                {m.recommendedVideo ? (
+                  <p className="mt-1 text-xs font-medium text-primary">
+                    Video recommendation added
+                  </p>
+                ) : null}
               </div>
               <div className="flex gap-1">
                 {m.fileData ? (

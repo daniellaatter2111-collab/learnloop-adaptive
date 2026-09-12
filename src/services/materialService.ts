@@ -14,6 +14,7 @@ export const materialService = {
     recipientStudentIds: string[];
     fileName?: string;
     fileData?: string;
+    recommendedVideo?: CourseMaterial["recommendedVideo"];
   }): CourseMaterial {
     const currentUser = getState().user;
     const teacherId = currentUser?.role === "admin" ? currentUser.id : "teacher-sarah";

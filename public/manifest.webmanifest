@@ -1,0 +1,12 @@
+{
+  "name": "LearnLoop Offline Learning",
+  "short_name": "LearnLoop",
+  "description": "Personalised learning that remains available with limited connectivity.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f9f9fa",
+  "theme_color": "#6846df",
+  "icons": [
+    { "src": "/learnloop-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

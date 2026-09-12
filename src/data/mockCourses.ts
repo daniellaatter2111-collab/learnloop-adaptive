@@ -125,5 +125,9 @@ export const mockMaterials: CourseMaterial[] = [
     uploadedAt: "8 Sep 2026",
     teacherId: "teacher-sarah",
     recipientStudentIds: ["stu-1", "stu-2", "stu-3", "stu-4"],
+    recommendedVideo: {
+      title: "Ionic bonds | AP Chemistry | Khan Academy",
+      url: "https://www.youtube.com/watch?v=FaeAurHnQJs",
+    },
   },
 ];

@@ -18,6 +18,7 @@ import { mockMaterials } from "@/data/mockCourses";
 import { mockLearningProfile } from "@/data/mockLearningProfile";
 import { mockLearningItems } from "@/data/mockCourses";
 import { studyPlan } from "@/data/mockReports";
+import { queueOfflineChange } from "@/lib/offline";
 
 export type AppState = {
   user: User | null;
@@ -96,6 +97,7 @@ export function setState(patch: Partial<AppState> | ((s: AppState) => Partial<Ap
   const next = typeof patch === "function" ? patch(state) : patch;
   state = { ...state, ...next };
   persist();
+  queueOfflineChange();
   emit();
 }
 

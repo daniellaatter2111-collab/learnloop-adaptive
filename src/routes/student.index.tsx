@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Download } from "lucide-react";
+import { ArrowRight, Download, ExternalLink, Sparkles, Video } from "lucide-react";
 import { DailyLearningCard } from "@/components/dashboard/DailyLearningCard";
 import { StatsGrid } from "@/components/dashboard/StatsGrid";
 import { LearningProfileCard } from "@/components/dashboard/LearningProfileCard";
@@ -75,18 +75,35 @@ function StudentDashboard() {
       <Card>
         <CardHeading
           title="Materials from your teacher"
-          description="Resources shared with your class."
+          description="Resources shared with your class, including video picks matched to your learning style."
         />
         {materials.length ? (
           <ul className="divide-y divide-border">
             {materials.slice(0, 3).map((material) => (
-              <li key={material.id} className="flex items-center justify-between gap-3 py-3">
+              <li
+                key={material.id}
+                className="flex flex-wrap items-center justify-between gap-3 py-3"
+              >
                 <div>
                   <p className="text-sm font-medium">{material.title}</p>
                   <p className="meta-text">
                     {material.subject} · {material.fileName ?? material.type} ·{" "}
                     {material.uploadedAt}
                   </p>
+                  {material.recommendedVideo ? (
+                    <a
+                      href={material.recommendedVideo.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-1.5 inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
+                    >
+                      <span className="inline-flex items-center gap-1 rounded-full bg-primary-soft px-2 py-0.5">
+                        <Sparkles className="size-3" aria-hidden /> Personalised video pick
+                      </span>
+                      <Video className="size-3.5" aria-hidden /> {material.recommendedVideo.title}
+                      <ExternalLink className="size-3" aria-hidden />
+                    </a>
+                  ) : null}
                 </div>
                 {material.fileData ? (
                   <Button asChild variant="ghost" size="sm">
