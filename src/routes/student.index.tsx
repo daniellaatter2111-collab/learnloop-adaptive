@@ -24,6 +24,8 @@ export const Route = createFileRoute("/student/")({
       },
       { property: "og:title", content: "Student dashboard — LearnLoop" },
       { property: "og:description", content: "Today's adaptive learning plan at a glance." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: StudentDashboard,
@@ -35,14 +37,16 @@ function StudentDashboard() {
   const student = currentStudent ?? fallbackStudent;
   const { user } = useAuth();
   const { profile, recommendations } = useLearningProfile();
-  const { assignments } = useAssignments(student.id);
+  const { assignments } = useAssignments(student?.id);
   const { forStudent } = useMaterials();
   const materials = forStudent(user?.studentId);
   const done = assignments.filter((a) => a.status === "completed").length;
   const upcoming = assignments.filter((a) => a.status !== "completed").slice(0, 3);
 
+  if (!student) return null;
+
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-3xl space-y-6">
       <DailyLearningCard
         progress={student.overallProgress}
         studied={student.studyTime}
@@ -58,8 +62,8 @@ function StudentDashboard() {
         streak={student.streak}
       />
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card>
           <CardHeading title="Weekly activity" description="Hours studied over the last 7 days" />
           <ActivityChart data={weeklyActivity} />
         </Card>

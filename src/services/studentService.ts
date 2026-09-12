@@ -16,7 +16,8 @@ export const studentService = {
     id: string;
     academicLevel: string;
   }): Student {
-    const teacherId = getState().user?.role === "admin" ? getState().user.id : "teacher-sarah";
+    const currentUser = getState().user;
+    const teacherId = currentUser?.role === "admin" ? currentUser.id : "teacher-sarah";
     const email = input.email.trim().toLowerCase();
     if (getState().students.some((student) => student.email.toLowerCase() === email)) {
       throw new Error("A learner with this email already exists.");
@@ -25,8 +26,7 @@ export const studentService = {
       id: input.id.trim() || `stu-${Date.now()}`,
       name:
         input.name?.trim() ||
-        email
-          .split("@")[0]
+        (email.split("@")[0] ?? "Learner")
           .replace(/[._-]/g, " ")
           .replace(/\b\w/g, (letter) => letter.toUpperCase()),
       email,

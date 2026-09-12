@@ -38,11 +38,11 @@ export const authService = {
         normalizedEmail === "sarah@learnloop.app"
           ? "teacher-sarah"
           : `teacher-${normalizedEmail.replace(/[^a-z0-9]/g, "-")}`;
+      const adminProfile = profiles.admin;
       const name =
         normalizedEmail === "sarah@learnloop.app"
-          ? profiles.admin.name
-          : normalizedEmail
-              .split("@")[0]
+          ? adminProfile.name
+          : (normalizedEmail.split("@")[0] ?? "Teacher")
               .replace(/[._-]/g, " ")
               .replace(/\b\w/g, (letter) => letter.toUpperCase());
       user = { id: teacherId, name, email: normalizedEmail, role };

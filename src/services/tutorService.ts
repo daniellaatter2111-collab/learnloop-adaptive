@@ -66,6 +66,7 @@ function solveQuadratic(message: string) {
   const coefficient = (value: string) =>
     value === "" || value === "+" ? 1 : value === "-" ? -1 : Number(value);
   const [a, b, c] = match.slice(1).map(coefficient);
+  if (a === undefined || b === undefined || c === undefined) return null;
   if (!Number.isFinite(a) || a === 0 || !Number.isFinite(b) || !Number.isFinite(c)) return null;
   const discriminant = b ** 2 - 4 * a * c;
   if (discriminant < 0)

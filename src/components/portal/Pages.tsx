@@ -652,16 +652,17 @@ export function AdminMaterialsPage() {
   async function submit(e: FormEvent) {
     e.preventDefault();
     if (!title.trim()) return;
-    uploadMaterial({
+    const materialInput = {
       title,
       subject,
       topic: "General",
       type: "document" as MaterialType,
       recipientStudentIds:
         recipientId === "all" ? students.map((student) => student.id) : [recipientId],
-      fileName,
-      fileData,
-    });
+      ...(fileName ? { fileName } : {}),
+      ...(fileData ? { fileData } : {}),
+    };
+    uploadMaterial(materialInput);
     setTitle("");
     setFileName(undefined);
     setFileData(undefined);

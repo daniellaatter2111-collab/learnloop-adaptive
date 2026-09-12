@@ -13,7 +13,7 @@ export function Card({
   as?: "section" | "div" | "article";
 }) {
   return (
-    <Tag className={cn("rounded-[14px] border border-border bg-surface p-5 sm:p-6", className)}>
+    <Tag className={cn("card-surface p-5 sm:p-6", className)}>
       {children}
     </Tag>
   );
@@ -230,7 +230,7 @@ export function Avatar({ name, className }: { name: string; className?: string }
   return (
     <span
       className={cn(
-        "inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-soft text-xs font-semibold text-accent-foreground",
+        "inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-foreground ring-2 ring-surface",
         className,
       )}
       aria-hidden

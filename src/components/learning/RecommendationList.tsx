@@ -57,7 +57,7 @@ export function RecommendationCard({
   const videoLabel = learnerStyle === "audio" ? "Listen on YouTube" : "Watch on YouTube";
 
   return (
-    <article className="flex flex-col rounded-[14px] border border-border bg-surface p-5">
+    <article className="card-surface flex flex-col p-5 transition-transform hover:-translate-y-0.5">
       <div className="flex items-start justify-between gap-2">
         <div>
           <p className="meta-text">{item.subject}</p>
@@ -168,7 +168,7 @@ export function RecommendationList({
         title="Recommended for you"
         description="Content selected based on your learning profile"
       />
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2">
         {items.map((item) => (
           <RecommendationCard key={item.id} item={item} learnerStyle={learnerStyle} />
         ))}

@@ -63,6 +63,8 @@ export function FlashcardDeck({
   const card = cards[index];
   const finished = known.size === cards.length;
 
+  if (!card) return null;
+
   function rateCard(knewIt: boolean) {
     setKnown((current) => {
       const next = new Set(current);

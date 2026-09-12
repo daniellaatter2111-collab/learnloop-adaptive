@@ -15,7 +15,8 @@ export const materialService = {
     fileName?: string;
     fileData?: string;
   }): CourseMaterial {
-    const teacherId = getState().user?.role === "admin" ? getState().user.id : "teacher-sarah";
+    const currentUser = getState().user;
+    const teacherId = currentUser?.role === "admin" ? currentUser.id : "teacher-sarah";
     const material: CourseMaterial = {
       ...input,
       id: `mat-${Date.now()}`,

@@ -24,7 +24,7 @@ type GeminiResponse = {
 export const generateGeminiTutorResponse = createServerFn({ method: "POST" })
   .validator(tutorRequestSchema)
   .handler(async ({ data }) => {
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env['GEMINI_API_KEY'];
     if (!apiKey) throw new Error("The Gemini API key is not configured on the server.");
 
     const response = await fetch(

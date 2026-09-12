@@ -10,7 +10,7 @@ type StudyPlanPreferences = {
 
 function toMinutes(time: string) {
   const [hours, minutes] = time.split(":").map(Number);
-  return hours * 60 + minutes;
+  return (hours ?? 0) * 60 + (minutes ?? 0);
 }
 
 function displayTime(totalMinutes: number) {

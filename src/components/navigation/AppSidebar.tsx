@@ -12,10 +12,10 @@ export function navFor(role: UserRole): readonly NavItem[] {
 export function BrandMark() {
   return (
     <div className="flex items-center gap-2.5">
-      <span className="flex size-8 items-center justify-center rounded-[10px] bg-primary text-primary-foreground">
+      <span className="flex size-9 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-lg">
         <Repeat className="size-4" aria-hidden />
       </span>
-      <span className="text-[15px] font-semibold tracking-tight">LearnLoop</span>
+      <span className="font-display text-lg font-extrabold">LearnLoop</span>
     </div>
   );
 }
@@ -49,10 +49,10 @@ export function AppSidebar({
                 onClick={onNavigate}
                 activeOptions={{ exact: item.to.split("/").length === 2 }}
                 className={cn(
-                  "flex items-center gap-3 rounded-[10px] px-3 py-2 text-sm font-medium text-muted-foreground transition-colors duration-150",
-                  "hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-sidebar-foreground/70 transition-all duration-150",
+                  "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
                 )}
-                activeProps={{ className: "bg-primary-soft text-accent-foreground" }}
+                activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground shadow-md" }}
               >
                 <item.icon className="size-[18px]" aria-hidden />
                 {item.label}
@@ -73,7 +73,7 @@ export function AppSidebar({
             type="button"
             onClick={onLogout}
             aria-label="Log out"
-            className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="rounded-md p-1.5 text-sidebar-foreground/60 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
           >
             <LogOut className="size-4" aria-hidden />
           </button>

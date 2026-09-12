@@ -31,7 +31,7 @@ export function AppHeader({
     user.role === "student" ? "/student/profile" : user.role === "admin" ? "/admin/settings" : "/parent/profile";
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border bg-surface/90 px-4 backdrop-blur sm:px-6">
+    <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border bg-surface/85 px-4 backdrop-blur-xl sm:px-6">
       <Sheet>
         <SheetTrigger
           className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden"
@@ -51,7 +51,7 @@ export function AppHeader({
       </Sheet>
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-[15px] font-semibold text-foreground">{greeting}</p>
+        <p className="truncate font-display text-[15px] font-bold text-foreground">{greeting}</p>
         {subline ? <p className="truncate text-xs text-muted-foreground">{subline}</p> : null}
       </div>
 

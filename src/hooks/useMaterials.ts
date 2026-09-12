@@ -9,10 +9,10 @@ export function useMaterials() {
       : materials;
   return {
     materials: scopedMaterials,
-    forStudent: (studentId: string | undefined) =>
-      scopedMaterials.filter(
-        (material) => Boolean(studentId) && material.recipientStudentIds.includes(studentId),
-      ),
+    forStudent: (studentId: string | undefined) => {
+      if (!studentId) return [];
+      return scopedMaterials.filter((material) => material.recipientStudentIds.includes(studentId));
+    },
     uploadMaterial: materialService.uploadMaterial,
     deleteMaterial: materialService.deleteMaterial,
   };

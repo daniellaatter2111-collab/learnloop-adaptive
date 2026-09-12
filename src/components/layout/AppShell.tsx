@@ -73,7 +73,7 @@ export function AppShell({ role, children }: { role: UserRole; children?: ReactN
           subline={subline}
           onLogout={handleLogout}
         />
-        <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6 sm:px-6 sm:py-8">
+        <main className="mx-auto w-full max-w-[1180px] flex-1 px-4 py-5 sm:px-6 sm:py-8">
           {children ?? <Outlet />}
         </main>
       </div>
